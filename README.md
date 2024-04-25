@@ -16,14 +16,14 @@ para desenvolver uma aplicação segura, robusta e escalável.
 # Versionamento
 
 ## Introdução
-    O desenvolvimento de software é um processo de construção extremamente dinâmico e
+O desenvolvimento de software é um processo de construção extremamente dinâmico e
 mutável. Isso significa que durante o desenvolvimento, requisitos certamente irão mudar
 e novos requisitos surgirão mais frequência do que gostaríamos. Além disso, o próprio
 processo de construir envolve mudanças de planejamento e refatorações ao longo
 do tempo, mesmo que não haja alteração nos requisitos.
 
 ## Motivação
-    Esse contexto também vale para a implementação de APIs. O ciclo descrito é bastante
+Esse contexto também vale para a implementação de APIs. O ciclo descrito é bastante
 desafiador quando estamos falando de uma API em construção que ainda não foi publicada em
 produção. Entretanto, na maior parte do tempo, isso ocorre enquanto nossa API já está no ar
 e possue usuários ativos que dependem dela. Nesse caso, como garantir que o usuário final 

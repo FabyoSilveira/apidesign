@@ -27,5 +27,6 @@ Esse contexto também vale para a implementação de APIs. O ciclo descrito é b
 desafiador quando estamos falando de uma API em construção que ainda não foi publicada em
 produção. Entretanto, na maior parte do tempo, isso ocorre enquanto nossa API já está no ar
 e possue usuários ativos que dependem dela. Nesse caso, como garantir que o usuário final 
-não vai ser afetado pelas alterações e refatorações que realizamos em nossa API? A resposta 
-reside em possuir uma boa estratégia de versionamento.
+não vai ser afetado pelas alterações e refatorações que realizamos em nossa API? Em caso de
+alterações que precisem ser feitas e afetem o usuário final, como comunicar isso de forma
+assertiva e clara? A resposta reside em possuir uma boa estratégia de versionamento.

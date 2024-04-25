@@ -30,3 +30,7 @@ e possue usuários ativos que dependem dela. Nesse caso, como garantir que o usu
 não vai ser afetado pelas alterações e refatorações que realizamos em nossa API? Em caso de
 alterações que precisem ser feitas e afetem o usuário final, como comunicar isso de forma
 assertiva e clara? A resposta reside em possuir uma boa estratégia de versionamento.
+
+## Versionamento Semântico
+## Compatibilidade
+## Estratégias de versionamento

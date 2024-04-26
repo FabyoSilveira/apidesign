@@ -71,7 +71,7 @@ recurso.
 ### Subdomínio
 É uma estratégia que atende a um propósito parecido a URI aplicada na raiz da API.
 Ou seja, utilizada para versionar uma API inteira, não alguns recursos ou domínios 
-específicos.
+específicos. Nela, adicionamos o identificador da versão no próprio domínio da API.
 - Versionar com subdomínio: https://v2.superrede.com/group/store/financial-resume
 
 ## Versionamento Semântico

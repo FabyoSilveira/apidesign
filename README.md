@@ -184,6 +184,7 @@ recursos restritos.
 requisição, o token que ele recebeu da API como comprovação da sua identidade.
 - Quando a API recebe uma requisição a algum recurso restrito, ela pega o token fornecido pelo usuário
 e verifica se esse é um token válido. 
-Dessa forma, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua 
+
+Por fim, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua 
 identidade.
 

@@ -148,3 +148,42 @@ quantidade fixa de dados.
 - Cada solicitação remove uma quantidade de dados do balde. Se a quantidade os dados do balde
 forem exauridos, as solicitações adicionais são atrasadas ou rejeitadas.
 - Em uma taxa e quantidade definidas, os dados são reabastecidos ao balde.
+
+# Autenticação e Autorização
+
+## Introdução
+Esse é um dos temas centrais quando se pensa em segurança de uma aplicação. Apesar de cada
+um desses termos se referirem a processos distintos, ambos trabalham juntos para garantir
+a segurança de uma API. 
+### Autenticação
+A autenticação se refere ao processo de validar a identidade de um usuário. Dessa forma,
+é possível atribuir a esse usuário as permissões e direitos associados a ele.
+### Autorização
+Já a autorização, ocorre quando um usuário, já autenticado, deseja realizar uma ação que 
+requer um nível de privilégio. Assim, o usuário comprova sua identidade para ser autorizado
+a acessar esse recurso.
+
+## Motivação
+É muito comum que recursos, dados ou funcionalidades de uma API sejam protegidas do uso livre.
+Para qualquer situação em que se deseja restringir o uso de algum recurso, seja por segurança
+ou contextos de negócio, é preciso utilizar autenticação e autorização para controlar o acesso 
+desse recurso somente a usuários autorizados.
+
+## Funcionamento na prática
+### Autenticação
+Vamos utilizar como exemplo o método mais comum de autenticação que é por meio do login por usuário
+e senha. 
+- O usuário requisita a API acesso ao sistema por meio dos seus identificadores únicos, usuário e senha.
+- A API valida se as credenciais estão corretas, gera um token hash criptografado por meio dessas 
+credenciais e envia para o usuário.
+Esse é o processo mais comum de autenticação.
+### Autorização
+Após o usuário ter sido autenticado, é possível utilizar esse token para autorizar o usuário a acessar
+recursos restritos.
+- Ao realizar uma requisição a algum endpoint protegido da API, o usuário envia no cabeçalho da 
+requisição, o token que ele recebeu da API como comprovação da sua identidade.
+- Quando a API recebe uma requisição a algum recurso restrito, ela pega o token fornecido pelo usuário
+e verifica se esse é um token válido. 
+Dessa forma, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua 
+identidade.
+

@@ -6,9 +6,9 @@ para desenvolver uma aplicação segura, robusta e escalável.
 # Tópicos cobertos
 
 - Versionamento
+- Rate Limits
 - Autenticação e Autorização
 - Tratamento de Falhas
-- Rate Limits
 - Monitoramento
 - Testabilidade
 - Documentação
@@ -96,3 +96,55 @@ e atualizações serão comunicadas ao usuário final da API. É necessário esc
 de comunicação que seja eficiente, de acordo com o público alvo da sua API. Além disso, 
 o conteúdo que será divulgado deve descrever os detalhes de utilização que o versionamento
 não cobre, com foco nas mudanças que geram impacto para o usuário. 
+
+# Rate Limits
+
+## Introdução
+Como tudo no nosso mundo, os recursos de uma API também são limitados e devem ser gerenciados.
+Rate Limits, é a técnica utilizada para controlar a taxa de requisições feitas para uma API, com
+o objetivo de proteger os recursos do uso excessivo.
+
+## Motivação
+Qual a razão para me preocupar com taxa de requisições? 
+O principal motivo para implementar Rate Limit, é evitar que sua API sofra com lentidão
+ao atender novos requests ou até mesmo fique fora do ar. Isso pode ocorrer por alta demanda
+dos seus serviços e também ocasionados por ataques maliciosos. Além de aumentar a
+segurança de sua API, os limites de requisições são fundamentais para gerenciar de forma 
+saudável o uso de seus usuários legítimos. Logo, o foco é manter os recursos da sua API
+disponíveis para todos seus usuários a todo momento. Podemos citar como bônus de todos 
+esses benefícios, a redução e controle dos custos da sua API. 
+
+## Tipos de Rate Limit 
+Rate Limit é um termo geral para se referir a limitação das taxas de requisição. Entretanto, 
+essa solução pode ser aplicada de diversas formas diferentes e em diferentes partes
+da sua API. Ou seja, todos os algoritmos podem ser aplicados em diferentes granularidades:
+- API
+- IPs
+- Usuário
+- Endpoint
+- Quantidade de dados
+### Fixed window
+- É definido um limite fixo de requisições em uma janela fixa de tempo: 10req/1min - 1000req/60min - 10000req/6hr.
+- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo atual. 
+Quando a janela de tempo passa, a contagem é redefinida.
+- Se o número total de solicitações dentro da janela de tempo exceder o limite permitido, as 
+solicitações adicionais são rejeitadas ou atrasadas até o início da próxima janela de tempo.
+### Sliding window
+- Similar ao Fixed Window, mas em vez de ter intervalos de tempo fixos, a janela de tempo é 
+contínua e desliza ao longo do tempo.
+- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo deslizante. 
+Se a contagem exceder o limite permitido, as solicitações adicionais são rejeitadas ou atrasadas.
+- Este método permite uma resposta mais flexível às rajadas de tráfego, pois o limite é verificado 
+continuamente e não em intervalos fixos.
+### Token bucket
+- Este algoritmo usa um modelo de "balde" onde um número fixo de tokens são depositados no balde.
+- Cada solicitação requer um ou mais tokens do balde para ser processada. Se não houver tokens 
+disponíveis, a solicitação é atrasada ou rejeitada.
+- Em uma taxa e quantidade definidas, novos tokens são disponibilizados no balde.
+- Este método é útil para suavizar picos de tráfego e manter uma taxa de saída constante ao longo do tempo.
+### Leacky bucket
+- Similar ao Token bucket, mas em vez de ter tokens disponíveis no balde, possui uma
+quantidade fixa de dados.
+- Cada solicitação remove uma quantidade de dados do balde. Se a quantidade os dados do balde
+forem exauridos, as solicitações adicionais são atrasadas ou rejeitadas.
+- Em uma taxa e quantidade definidas, os dados são reabastecidos ao balde.

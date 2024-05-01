@@ -230,6 +230,7 @@ Em geral, bons softwares de monitoramento possuem ferramentas que te permitem co
 em forma de gráficos e dados estruturados, sobre todas as informações listadas. Existem diversas visualizações
 prontas, entretanto, o principal valor está em analisar os dados fornecidos de forma aderente aos objetivos
 de negócio da sua API. 
+
 Além disso, a configuração automatizada de alertas para eventos como uma alta taxa de falhas em um serviço, 
 perda de disponibilidade ou tempos de latência elevados é altamente personalizável, incluindo a escolha dos 
 métodos de comunicação para notificar os responsáveis. Essa flexibilidade possibilita a criação de estratégias 

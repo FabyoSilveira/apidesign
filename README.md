@@ -225,6 +225,7 @@ escalabilidade para lidar com aumentos de tráfego e servir de insumo para o pla
 - Tempo de resposta
 - Taxa de falhas, assim como os códigos de status http retornados.
 - Os logs e registros feitos pela aplicação, dos dados durante cada interação dos usuários.
+
 Em geral, bons softwares de monitoramento possuem ferramentas que te permitem coletar insights
 em forma de gráficos e dados estruturados, sobre todas as informações listadas. Existem diversas visualizações
 prontas, entretanto, o principal valor está em analisar os dados fornecidos de forma aderente aos objetivos

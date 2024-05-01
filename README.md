@@ -8,10 +8,11 @@ para desenvolver uma aplicação segura, robusta e escalável.
 - Versionamento
 - Rate Limits
 - Autenticação e Autorização
-- Tratamento de Falhas
 - Monitoramento
-- Testabilidade
 - Documentação
+- Tratamento de Falhas
+- Testabilidade
+
 
 # Versionamento
 
@@ -188,3 +189,47 @@ e verifica se esse é um token válido.
 Por fim, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua 
 identidade.
 
+# Monitoramento
+
+## Introdução
+O monitoramento de APIs é a prática de observar e analisar o comportamento de uma aplicação em produção. 
+Durante esse processo, vários fatores são avaliados, sendo os principais: performance, disponibilidade 
+e taxa de falhas.
+
+## Motivação
+Ao expor uma API para os usuários, é imprescindível que dediquemos esforço para entregarmos uma interface
+que funciona, esteja disponível a maior parte do tempo e seja segura. Sem o monitoramento, essa tarefa se
+tornaria muito difícil ou quase impossível, visto que não teríamos visibilidade sobre o comportamento da
+nossa aplicação em produção. 
+
+## Principais parâmetros
+
+### Performance e disponibilidade
+Monitorar a disponibilidade da API permite que em caso de queda dos serviços, possamos reagir o mais rápido
+possível e minimizar o tempo de indisponibilidade. Já a perfomance, pode ser fundamental para agir 
+preventivamente sobre possíveis causas de indisponibilidade e evoluir a eficiência/tempo de resposta 
+da nossa aplicação de uma maneira geral.
+### Taxa de falhas 
+Visualizar a taxa de falhas dos serviços, permite agir proativamente na correção de erros ocasionados pela subida
+de novas versões ou indisponibilidade de algum recurso.
+### Segurança 
+O monitoramento também pode ajudar a identificar atividades suspeitas que possam indicar tentativas de ataques 
+ou violações de segurança na API.
+### Insights 
+Acompanhar o uso da API ao longo do tempo fornece insights sobre a demanda dos usuários, facilitando a 
+escalabilidade para lidar com aumentos de tráfego e servir de insumo para o planejamento estratégico.
+
+## Benefícios práticos
+É possível visualizar as informações mais importantes a nível de recursos da sua aplicação, por exemplo:
+- Disponibilidade do endpoint
+- Tempo de resposta
+- Taxa de falhas, assim como os códigos de status http retornados.
+- Os logs e registros feitos pela aplicação, dos dados durante cada interação dos usuários.
+Em geral, bons softwares de monitoramento possuem ferramentas que te permitem coletar insights
+em forma de gráficos e dados estruturados, sobre todas as informações listadas. Existem diversas visualizações
+prontas, entretanto, o principal valor está em analisar os dados fornecidos de forma aderente aos objetivos
+de negócio da sua API. 
+Além disso, a configuração automatizada de alertas para eventos como uma alta taxa de falhas em um serviço, 
+perda de disponibilidade ou tempos de latência elevados é altamente personalizável, incluindo a escolha dos 
+métodos de comunicação para notificar os responsáveis. Essa flexibilidade possibilita a criação de estratégias 
+robustas para lidar com a saúde da API em ambiente de produção.

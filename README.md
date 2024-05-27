@@ -235,3 +235,78 @@ Além disso, a configuração automatizada de alertas para eventos como uma alta
 perda de disponibilidade ou tempos de latência elevados é altamente personalizável, incluindo a escolha dos 
 métodos de comunicação para notificar os responsáveis. Essa flexibilidade possibilita a criação de estratégias 
 robustas para lidar com a saúde da API em ambiente de produção.
+
+# Documentação
+
+## Introdução
+Este tópico aborda o conteúdo que descreve como utilizar uma API. Uma documentação clara e objetiva é fundamental 
+para facilitar o uso da API pelos clientes, funcionando como um manual de instruções sobre a utilização do software.
+
+A documentação pode existir em diferentes formatos e linguagens. Essas diversas representações podem ser usadas 
+para documentar um mesmo projeto e serem complementares entre si. Não necessariamente é preciso escolher apenas 
+uma delas para documentar um projeto de software.
+
+## Motivação
+As APIs podem oferecer funcionalidades extremamente complexas por meio de abstrações simplificadas. No entanto, 
+de que serve uma API se as abstrações que ela fornece não estão bem documentadas? Se o processo de utilização dessas 
+abstrações se tornar problemático, será que a reutilização ainda faz sentido? Em alguns casos, pode ser mais vantajoso 
+reimplementar essas funcionalidades do zero.
+
+Para evitar que isso aconteça com nosso projeto de API, é essencial desenvolver uma estratégia de documentação que 
+auxilie o desenvolvedor e facilite o uso de nossas abstrações. Assim, garantimos que reutilizar seja menos problemático 
+do que reimplementar.
+
+## Documentando sua API
+### Formato 
+Para que sua API esteja bem documentada, ela precisa funcionar como um bom manual de instruções. Bons manuais de instruções 
+têm informações organizadas de forma a facilitar o entendimento e o acesso. Não existe uma regra fixa sobre como organizar e 
+formatar suas informações, mas o principal ponto é que elas devem estar adequadas ao público e ao contexto que irá consumi-las. 
+É interessante investigar APIs de contextos semelhantes ao seu e observar como elas estruturam suas próprias documentações.
+### O que documentar
+Além disso, sua API precisa abordar todos os pontos fundamentais que permitam aos desenvolvedores utilizarem seus recursos 
+corretamente. Cada API pode ter diferentes assuntos indispensáveis na documentação. Aqui estão exemplos de abordagens frequentes 
+em documentações de API em geral:
+- Introdução
+  - Descrição geral da API, objetivo de sua utilização e quais problemas ela ajuda a resolver.
+- Endpoints
+  - Lista dos endpoints disponíveis.
+  - URL e contrato de utilização de cada endpoint.
+- Autenticação
+  - Caso exista, detalhar e explicar como funciona a autenticação e autorização para utilizar recursos restritos da API.
+- Versionamento 
+  - Detalhes sobre a estratégia de versionamento da API.
+  - Especificar onde encontrar informações sobre as atualizações da API. 
+- Limitações
+  - Documentar a política de rate limits implementada pela API.
+  - Informar o usuário sobre possíveis pacotes ou cotas de uso oferecidas.
+### Qualidade da documentação
+Um bom caminho para melhorar a qualidade da sua documentação é focar nos pontos que são conhecidamente problemáticos nas 
+documentações de API já existentes. Sendo eles:
+- Informações incompletas
+  - Descrição de um recurso ou elemento da API não presente onde deveria estar.
+- Ambiguidade
+  - A descrição de um tópico ou recurso abre margem para mais de uma interpretação.
+- Exemplos sem explicação
+  - Um exemplo de código que não está devidamente explicado.
+- Informações obsoletas
+  - Qualquer informação que se refira a versões antigas e que não necessariamente continua sendo verdade.
+
+## Documentação automática
+Atualmente, existem diversas ferramentas que têm como objetivo documentar uma API de forma automática. Essas ferramentas 
+podem ser complementos importantes no conjunto de conteúdos sobre a utilização da sua API.
+
+### Evite documentações incorretas ou obsoletas
+Essas ferramentas são interessantes porque são configuráveis no seu projeto e possuem referência cruzada. Isso significa 
+que as atualizações e alterações feitas no projeto são automaticamente refletidas nas documentações geradas por esses 
+frameworks. Dessa forma, resolvem um dos problemas mais comuns na documentação de APIs: manter a documentação atualizada 
+de acordo com o software, evitando que se tornem obsoletas ou incorretas com o tempo.
+### Listagem de endpoints e interface de testes
+Outro aspecto que torna essas ferramentas muito úteis é a geração automática de uma interface que permite ao desenvolvedor 
+não apenas acessar a listagem dos endpoints disponíveis na API, mas também entender os contratos de cada recurso e realizar 
+chamadas de teste para verificar o comportamento dos endpoints.
+### Exemplos
+Exemplos de ferramentas de documentação automática de API incluem:
+- Swagger
+- RAML
+- API Blueprint
+

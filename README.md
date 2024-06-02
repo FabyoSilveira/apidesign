@@ -13,10 +13,10 @@ para desenvolver uma aplicação segura, robusta e escalável.
 - Tratamento de Falhas
 - Testabilidade
 
-
 # Versionamento
 
 ## Introdução
+
 O desenvolvimento de software é um processo de construção extremamente dinâmico e
 mutável. Isso significa que durante o desenvolvimento, os requisitos certamente irão mudar
 e novos requisitos surgirão mais frequência do que gostaríamos. Além disso, o próprio
@@ -24,22 +24,25 @@ processo de construir envolve mudanças de planejamento e refatorações ao long
 do tempo, mesmo que não haja alteração nos requisitos.
 
 ## Motivação
+
 Esse contexto também se aplica na implementação de APIs. O ciclo descrito é bastante
 desafiador quando falamos de uma API em construção que ainda não foi publicada em
 produção. Na maior parte do tempo, isso ocorre enquanto nossa API já está no ar
-e possue usuários ativos que dependem dela. Nesse caso, como garantir que o usuário final 
-não seja afetado pelas alterações que realizamos em nossa API? Em caso de alterações 
-indispensáveis que afetem o usuário final, como comunicar isso de forma assertiva e 
+e possue usuários ativos que dependem dela. Nesse caso, como garantir que o usuário final
+não seja afetado pelas alterações que realizamos em nossa API? Em caso de alterações
+indispensáveis que afetem o usuário final, como comunicar isso de forma assertiva e
 clara? A resposta reside em possuir uma boa estratégia de versionamento.
 
 ## Compatibilidade
+
 Esse é a principal razão pela qual devemos versionar nossa API. Quando realizamos uma alteração
 no software, é importante estar ciente se essa mudança gera incompatibilidade com versões anteriores.
-A definição do que quebra a retrocompatibilidade de uma API, pode variar e ter parâmetros 
-específicas para cada contexto. No entanto, existem alterações que mudam o contrato de funcionamento de 
+A definição do que quebra a retrocompatibilidade de uma API, pode variar e ter parâmetros
+específicas para cada contexto. No entanto, existem alterações que mudam o contrato de funcionamento de
 recursos de tal forma que impedem sua utilização sem afetar o usuário.
 
 Alguns exemplos de quebra de retrocompatibilidade são:
+
 - Remoção de recursos ou endpoints da API.
 - Alteração na nomenclatura de recursos ou endpoints da API.
 - Adição de campos obrigatórios em contratos da API.
@@ -47,180 +50,232 @@ Alguns exemplos de quebra de retrocompatibilidade são:
 - Mudança no comportamento ou resposta de um recurso.
 
 ## Estratégias de versionamento de recursos
-Como foi citado anteriormente, em alguns casos, precisamos introduzir alterações e 
+
+Como foi citado anteriormente, em alguns casos, precisamos introduzir alterações e
 novas funcionalidades em recursos já existentes, sem quebrar a retrocompatibilidade.
-Nessa situação em que é necessário manter mais de uma versão dos recursos da api, no ar, 
-ao mesmo tempo, precisamos recorrer a algumas estratégias de versionamento.  
+Nessa situação em que é necessário manter mais de uma versão dos recursos da api, no ar,
+ao mesmo tempo, precisamos recorrer a algumas estratégias de versionamento.
 
 Como exemplo, vamos utilizar uma API que controla uma rede de supermercados.
 
 ### URI
-Uma das estratégias mais comuns de versionamento é utilizar um prefixo na URI(Uniform Resource Identifier) 
+
+Uma das estratégias mais comuns de versionamento é utilizar um prefixo na URI(Uniform Resource Identifier)
 do recurso que deseja versionar. Com essa estratégia, é possível versionar endpoints isolados ou, até,
 a API inteira. Essa escolha, vai depender da granularidade e objetivo desse versionamento.
 
 Podemos observar a flexibilidade e clareza dessa estratégia de versionamento a seguir:
+
 - Versionar endpoint isolado: https://superrede.com/group/store/v2/financial-resume
 - Versionar todos os recursos de um domínio: https://superrede.com/group/v2/store/financial-resume
 - Versionar toda a API: https://superrede.com/v2/group/store/financial-resume
+
 ### Header ou parâmetro da chamada
+
 Uma alternativa para versionamento também pode ser incluir a versão da API ou recurso
 que deseja acessar, por meio de um Header customizado ou parâmetro na própria chamada do
 recurso.
+
 - Versionar por meio de header: curl --location 'https://superrede.com/group/store/financial-resume' \ --header 'Version: v2'
 - Versionar por meio de um parâmetro: https://superrede.com/group/store/financial-resume?api-version=2
+
 ### Subdomínio
+
 É uma estratégia que atende a um propósito parecido a URI aplicada na raiz da API.
-Ou seja, utilizada para versionar uma API inteira, não alguns recursos ou domínios 
+Ou seja, utilizada para versionar uma API inteira, não alguns recursos ou domínios
 específicos. Nela, adicionamos o identificador da versão no próprio domínio da API.
+
 - Versionar com subdomínio: https://v2.superrede.com/group/store/financial-resume
 
 ## Versionamento Semântico
+
 O versionamento semântico propõe uma forma padronizada de nomear as versões da sua API. Essa
 estratégia permite estabelecer uma comunicação eficiente com seus usuários por meio de um único
-canal, que é a versão do seu software. Com ela, é possível inferir quais tipos de mudanças 
+canal, que é a versão do seu software. Com ela, é possível inferir quais tipos de mudanças
 a aplicação sofreu. Consiste em três números separados por pontos: 'MAJOR.MINOR.PATCH'.
+
 ### Major
-Indica atualizações com mudanças que quebram a compatibilidade com versões anteriores. Por exemplo, 
-uma mudança de 1.x.x para 2.x.x sugere incompatibilidade, comunicando aos usuários que adaptações 
+
+Indica atualizações com mudanças que quebram a compatibilidade com versões anteriores. Por exemplo,
+uma mudança de 1.x.x para 2.x.x sugere incompatibilidade, comunicando aos usuários que adaptações
 em seus códigos serão necessárias para continuar utilizando a API.
+
 ### Minor
-Representa adições ou melhorias ao software sem quebrar a compatibilidade com versões anteriores. 
+
+Representa adições ou melhorias ao software sem quebrar a compatibilidade com versões anteriores.
 Por exemplo, uma atualização de 1.1.x para 1.2.x traz novos recursos ou melhorias.
+
 ### Patch
-Indica correções de bugs ou problemas encontrados na API, sem introduzir novos recursos. Por exemplo, 
+
+Indica correções de bugs ou problemas encontrados na API, sem introduzir novos recursos. Por exemplo,
 uma mudança de 2.3.1 para 2.3.2 sugere correções de falhas.
 
 ## Comunicação
+
 Por fim, um assunto muito importante quando falamos de versionamento, é em como essas versões
-e atualizações serão comunicadas ao usuário final da API. É necessário escolher um canal 
-de comunicação que seja eficiente, de acordo com o público alvo da sua API. Além disso, 
+e atualizações serão comunicadas ao usuário final da API. É necessário escolher um canal
+de comunicação que seja eficiente, de acordo com o público alvo da sua API. Além disso,
 o conteúdo que será divulgado deve descrever os detalhes de utilização que o versionamento
-não cobre, com foco nas mudanças que geram impacto para o usuário. 
+não cobre, com foco nas mudanças que geram impacto para o usuário.
 
 # Rate Limits
 
 ## Introdução
+
 Como tudo no nosso mundo, os recursos de uma API também são limitados e devem ser gerenciados.
 Rate Limits, é a técnica utilizada para controlar a taxa de requisições feitas para uma API, com
 o objetivo de proteger os recursos do uso excessivo.
 
 ## Motivação
-Qual a razão para me preocupar com taxa de requisições? 
+
+Qual a razão para me preocupar com taxa de requisições?
 O principal motivo para implementar Rate Limit, é evitar que sua API sofra com lentidão
 ao atender novos requests ou até mesmo fique fora do ar. Isso pode ocorrer por alta demanda
 dos seus serviços e também ocasionados por ataques maliciosos. Além de aumentar a
-segurança de sua API, os limites de requisições são fundamentais para gerenciar de forma 
+segurança de sua API, os limites de requisições são fundamentais para gerenciar de forma
 saudável o uso de seus usuários legítimos. Logo, o foco é manter os recursos da sua API
-disponíveis para todos seus usuários a todo momento. Podemos citar como bônus de todos 
-esses benefícios, a redução e controle dos custos da sua API. 
+disponíveis para todos seus usuários a todo momento. Podemos citar como bônus de todos
+esses benefícios, a redução e controle dos custos da sua API.
 
-## Tipos de Rate Limit 
-Rate Limit é um termo geral para se referir a limitação das taxas de requisição. Entretanto, 
+## Tipos de Rate Limit
+
+Rate Limit é um termo geral para se referir a limitação das taxas de requisição. Entretanto,
 essa solução pode ser aplicada de diversas formas diferentes e em diferentes partes
 da sua API. Ou seja, todos os algoritmos podem ser aplicados em diferentes granularidades:
+
 - API
 - IPs
 - Usuário
 - Endpoint
 - Quantidade de dados
+
 ### Fixed window
+
 - É definido um limite fixo de requisições em uma janela fixa de tempo: 10req/1min - 1000req/60min - 10000req/6hr.
-- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo atual. 
-Quando a janela de tempo passa, a contagem é redefinida.
-- Se o número total de solicitações dentro da janela de tempo exceder o limite permitido, as 
-solicitações adicionais são rejeitadas ou atrasadas até o início da próxima janela de tempo.
+- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo atual.
+  Quando a janela de tempo passa, a contagem é redefinida.
+- Se o número total de solicitações dentro da janela de tempo exceder o limite permitido, as
+  solicitações adicionais são rejeitadas ou atrasadas até o início da próxima janela de tempo.
+
 ### Sliding window
-- Similar ao Fixed Window, mas em vez de ter intervalos de tempo fixos, a janela de tempo é 
-contínua e desliza ao longo do tempo.
-- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo deslizante. 
-Se a contagem exceder o limite permitido, as solicitações adicionais são rejeitadas ou atrasadas.
-- Este método permite uma resposta mais flexível às rajadas de tráfego, pois o limite é verificado 
-continuamente e não em intervalos fixos.
+
+- Similar ao Fixed Window, mas em vez de ter intervalos de tempo fixos, a janela de tempo é
+  contínua e desliza ao longo do tempo.
+- Cada vez que uma solicitação é recebida, ela é contada dentro da janela de tempo deslizante.
+  Se a contagem exceder o limite permitido, as solicitações adicionais são rejeitadas ou atrasadas.
+- Este método permite uma resposta mais flexível às rajadas de tráfego, pois o limite é verificado
+  continuamente e não em intervalos fixos.
+
 ### Token bucket
+
 - Este algoritmo usa um modelo de "balde" onde um número fixo de tokens são depositados no balde.
-- Cada solicitação requer um ou mais tokens do balde para ser processada. Se não houver tokens 
-disponíveis, a solicitação é atrasada ou rejeitada.
+- Cada solicitação requer um ou mais tokens do balde para ser processada. Se não houver tokens
+  disponíveis, a solicitação é atrasada ou rejeitada.
 - Em uma taxa e quantidade definidas, novos tokens são disponibilizados no balde.
 - Este método é útil para suavizar picos de tráfego e manter uma taxa de saída constante ao longo do tempo.
+
 ### Leacky bucket
+
 - Similar ao Token bucket, mas em vez de ter tokens disponíveis no balde, possui uma
-quantidade fixa de dados.
+  quantidade fixa de dados.
 - Cada solicitação remove uma quantidade de dados do balde. Se a quantidade os dados do balde
-forem exauridos, as solicitações adicionais são atrasadas ou rejeitadas.
+  forem exauridos, as solicitações adicionais são atrasadas ou rejeitadas.
 - Em uma taxa e quantidade definidas, os dados são reabastecidos ao balde.
 
 # Autenticação e Autorização
 
 ## Introdução
+
 Esse é um dos temas centrais quando se pensa em segurança de uma aplicação. Apesar de cada
 um desses termos se referirem a processos distintos, ambos trabalham juntos para garantir
-a segurança de uma API. 
+a segurança de uma API.
+
 ### Autenticação
+
 A autenticação se refere ao processo de validar a identidade de um usuário. Dessa forma,
 é possível atribuir a esse usuário as permissões e direitos associados a ele.
+
 ### Autorização
-Já a autorização, ocorre quando um usuário, já autenticado, deseja realizar uma ação que 
+
+Já a autorização, ocorre quando um usuário, já autenticado, deseja realizar uma ação que
 requer um nível de privilégio. Assim, o usuário comprova sua identidade para ser autorizado
 a acessar esse recurso.
 
 ## Motivação
+
 É muito comum que recursos, dados ou funcionalidades de uma API sejam protegidas do uso livre.
 Para qualquer situação em que se deseja restringir o uso de algum recurso, seja por segurança
-ou contextos de negócio, é preciso utilizar autenticação e autorização para controlar o acesso 
+ou contextos de negócio, é preciso utilizar autenticação e autorização para controlar o acesso
 desse recurso somente a usuários autorizados.
 
 ## Funcionamento na prática
+
 ### Autenticação
+
 Vamos utilizar como exemplo o método mais comum de autenticação que é por meio do login por usuário
-e senha. 
+e senha.
+
 - O usuário requisita a API acesso ao sistema por meio dos seus identificadores únicos, usuário e senha.
-- A API valida se as credenciais estão corretas, gera um token hash criptografado por meio dessas 
-credenciais e envia para o usuário.
-Esse é o processo mais comum de autenticação.
+- A API valida se as credenciais estão corretas, gera um token hash criptografado por meio dessas
+  credenciais e envia para o usuário.
+  Esse é o processo mais comum de autenticação.
+
 ### Autorização
+
 Após o usuário ter sido autenticado, é possível utilizar esse token para autorizar o usuário a acessar
 recursos restritos.
-- Ao realizar uma requisição a algum endpoint protegido da API, o usuário envia no cabeçalho da 
-requisição, o token que ele recebeu da API como comprovação da sua identidade.
-- Quando a API recebe uma requisição a algum recurso restrito, ela pega o token fornecido pelo usuário
-e verifica se esse é um token válido. 
 
-Por fim, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua 
+- Ao realizar uma requisição a algum endpoint protegido da API, o usuário envia no cabeçalho da
+  requisição, o token que ele recebeu da API como comprovação da sua identidade.
+- Quando a API recebe uma requisição a algum recurso restrito, ela pega o token fornecido pelo usuário
+  e verifica se esse é um token válido.
+
+Por fim, é possível autorizar o usuário a acessar o recurso, visto que o token comprova a sua
 identidade.
 
 # Monitoramento
 
 ## Introdução
-O monitoramento de APIs é a prática de observar e analisar o comportamento de uma aplicação em produção. 
-Durante esse processo, vários fatores são avaliados, sendo os principais: performance, disponibilidade 
+
+O monitoramento de APIs é a prática de observar e analisar o comportamento de uma aplicação em produção.
+Durante esse processo, vários fatores são avaliados, sendo os principais: performance, disponibilidade
 e taxa de falhas.
 
 ## Motivação
+
 Ao expor uma API para os usuários, é imprescindível que dediquemos esforço para entregarmos uma interface
 que funciona, esteja disponível a maior parte do tempo e seja segura. Sem o monitoramento, essa tarefa se
 tornaria muito difícil ou quase impossível, visto que não teríamos visibilidade sobre o comportamento da
-nossa aplicação em produção. 
+nossa aplicação em produção.
 
 ## Principais parâmetros
 
 ### Performance e disponibilidade
+
 Monitorar a disponibilidade da API permite que em caso de queda dos serviços, possamos reagir o mais rápido
-possível e minimizar o tempo de indisponibilidade. Já a perfomance, pode ser fundamental para agir 
-preventivamente sobre possíveis causas de indisponibilidade e evoluir a eficiência/tempo de resposta 
+possível e minimizar o tempo de indisponibilidade. Já a perfomance, pode ser fundamental para agir
+preventivamente sobre possíveis causas de indisponibilidade e evoluir a eficiência/tempo de resposta
 da nossa aplicação de uma maneira geral.
-### Taxa de falhas 
+
+### Taxa de falhas
+
 Visualizar a taxa de falhas dos serviços, permite agir proativamente na correção de erros ocasionados pela subida
 de novas versões ou indisponibilidade de algum recurso.
-### Segurança 
-O monitoramento também pode ajudar a identificar atividades suspeitas que possam indicar tentativas de ataques 
+
+### Segurança
+
+O monitoramento também pode ajudar a identificar atividades suspeitas que possam indicar tentativas de ataques
 ou violações de segurança na API.
-### Insights 
-Acompanhar o uso da API ao longo do tempo fornece insights sobre a demanda dos usuários, facilitando a 
+
+### Insights
+
+Acompanhar o uso da API ao longo do tempo fornece insights sobre a demanda dos usuários, facilitando a
 escalabilidade para lidar com aumentos de tráfego e servir de insumo para o planejamento estratégico.
 
 ## Benefícios práticos
+
 É possível visualizar as informações mais importantes a nível de recursos da sua aplicação, por exemplo:
+
 - Disponibilidade do endpoint
 - Tempo de resposta
 - Taxa de falhas, assim como os códigos de status http retornados.
@@ -229,43 +284,50 @@ escalabilidade para lidar com aumentos de tráfego e servir de insumo para o pla
 Em geral, bons softwares de monitoramento possuem ferramentas que te permitem coletar insights
 em forma de gráficos e dados estruturados, sobre todas as informações listadas. Existem diversas visualizações
 prontas, entretanto, o principal valor está em analisar os dados fornecidos de forma aderente aos objetivos
-de negócio da sua API. 
+de negócio da sua API.
 
-Além disso, a configuração automatizada de alertas para eventos como uma alta taxa de falhas em um serviço, 
-perda de disponibilidade ou tempos de latência elevados é altamente personalizável, incluindo a escolha dos 
-métodos de comunicação para notificar os responsáveis. Essa flexibilidade possibilita a criação de estratégias 
+Além disso, a configuração automatizada de alertas para eventos como uma alta taxa de falhas em um serviço,
+perda de disponibilidade ou tempos de latência elevados é altamente personalizável, incluindo a escolha dos
+métodos de comunicação para notificar os responsáveis. Essa flexibilidade possibilita a criação de estratégias
 robustas para lidar com a saúde da API em ambiente de produção.
 
 # Documentação
 
 ## Introdução
-Este tópico aborda o conteúdo que descreve como utilizar uma API. Uma documentação clara e objetiva é fundamental 
+
+Este tópico aborda o conteúdo que descreve como utilizar uma API. Uma documentação clara e objetiva é fundamental
 para facilitar o uso da API pelos clientes, funcionando como um manual de instruções sobre a utilização do software.
 
-A documentação pode existir em diferentes formatos e linguagens. Essas diversas representações podem ser usadas 
-para documentar um mesmo projeto e serem complementares entre si. Não necessariamente é preciso escolher apenas 
+A documentação pode existir em diferentes formatos e linguagens. Essas diversas representações podem ser usadas
+para documentar um mesmo projeto e serem complementares entre si. Não necessariamente é preciso escolher apenas
 uma delas para documentar um projeto de software.
 
 ## Motivação
-As APIs podem oferecer funcionalidades extremamente complexas por meio de abstrações simplificadas. No entanto, 
-de que serve uma API se as abstrações que ela fornece não estão bem documentadas? Se o processo de utilização dessas 
-abstrações se tornar problemático, será que a reutilização ainda faz sentido? Em alguns casos, pode ser mais vantajoso 
+
+As APIs podem oferecer funcionalidades extremamente complexas por meio de abstrações simplificadas. No entanto,
+de que serve uma API se as abstrações que ela fornece não estão bem documentadas? Se o processo de utilização dessas
+abstrações se tornar problemático, será que a reutilização ainda faz sentido? Em alguns casos, pode ser mais vantajoso
 reimplementar essas funcionalidades do zero.
 
-Para evitar que isso aconteça com nosso projeto de API, é essencial desenvolver uma estratégia de documentação que 
-auxilie o desenvolvedor e facilite o uso de nossas abstrações. Assim, garantimos que reutilizar seja menos problemático 
+Para evitar que isso aconteça com nosso projeto de API, é essencial desenvolver uma estratégia de documentação que
+auxilie o desenvolvedor e facilite o uso de nossas abstrações. Assim, garantimos que reutilizar seja menos problemático
 do que reimplementar.
 
 ## Documentando sua API
-### Formato 
-Para que sua API esteja bem documentada, ela precisa funcionar como um bom manual de instruções. Bons manuais de instruções 
-têm informações organizadas de forma a facilitar o entendimento e o acesso. Não existe uma regra fixa sobre como organizar e 
-formatar suas informações, mas o principal ponto é que elas devem estar adequadas ao público e ao contexto que irá consumi-las. 
+
+### Formato
+
+Para que sua API esteja bem documentada, ela precisa funcionar como um bom manual de instruções. Bons manuais de instruções
+têm informações organizadas de forma a facilitar o entendimento e o acesso. Não existe uma regra fixa sobre como organizar e
+formatar suas informações, mas o principal ponto é que elas devem estar adequadas ao público e ao contexto que irá consumi-las.
 É interessante investigar APIs de contextos semelhantes ao seu e observar como elas estruturam suas próprias documentações.
+
 ### O que documentar
-Além disso, sua API precisa abordar todos os pontos fundamentais que permitam aos desenvolvedores utilizarem seus recursos 
-corretamente. Cada API pode ter diferentes assuntos indispensáveis na documentação. Aqui estão exemplos de abordagens frequentes 
+
+Além disso, sua API precisa abordar todos os pontos fundamentais que permitam aos desenvolvedores utilizarem seus recursos
+corretamente. Cada API pode ter diferentes assuntos indispensáveis na documentação. Aqui estão exemplos de abordagens frequentes
 em documentações de API em geral:
+
 - Introdução
   - Descrição geral da API, objetivo de sua utilização e quais problemas ela ajuda a resolver.
 - Endpoints
@@ -273,15 +335,18 @@ em documentações de API em geral:
   - URL e contrato de utilização de cada endpoint.
 - Autenticação
   - Caso exista, detalhar e explicar como funciona a autenticação e autorização para utilizar recursos restritos da API.
-- Versionamento 
+- Versionamento
   - Detalhes sobre a estratégia de versionamento da API.
-  - Especificar onde encontrar informações sobre as atualizações da API. 
+  - Especificar onde encontrar informações sobre as atualizações da API.
 - Limitações
   - Documentar a política de rate limits implementada pela API.
   - Informar o usuário sobre possíveis pacotes ou cotas de uso oferecidas.
+
 ### Qualidade da documentação
-Um bom caminho para melhorar a qualidade da sua documentação é focar nos pontos que são conhecidamente problemáticos nas 
+
+Um bom caminho para melhorar a qualidade da sua documentação é focar nos pontos que são conhecidamente problemáticos nas
 documentações de API já existentes. Sendo eles:
+
 - Informações incompletas
   - Descrição de um recurso ou elemento da API não presente onde deveria estar.
 - Ambiguidade
@@ -292,21 +357,33 @@ documentações de API já existentes. Sendo eles:
   - Qualquer informação que se refira a versões antigas e que não necessariamente continua sendo verdade.
 
 ## Documentação automática
-Atualmente, existem diversas ferramentas que têm como objetivo documentar uma API de forma automática. Essas ferramentas 
+
+Atualmente, existem diversas ferramentas que têm como objetivo documentar uma API de forma automática. Essas ferramentas
 podem ser complementos importantes no conjunto de conteúdos sobre a utilização da sua API.
 
 ### Evite documentações incorretas ou obsoletas
-Essas ferramentas são interessantes porque são configuráveis no seu projeto e possuem referência cruzada. Isso significa 
-que as atualizações e alterações feitas no projeto são automaticamente refletidas nas documentações geradas por esses 
-frameworks. Dessa forma, resolvem um dos problemas mais comuns na documentação de APIs: manter a documentação atualizada 
+
+Essas ferramentas são interessantes porque são configuráveis no seu projeto e possuem referência cruzada. Isso significa
+que as atualizações e alterações feitas no projeto são automaticamente refletidas nas documentações geradas por esses
+frameworks. Dessa forma, resolvem um dos problemas mais comuns na documentação de APIs: manter a documentação atualizada
 de acordo com o software, evitando que se tornem obsoletas ou incorretas com o tempo.
+
 ### Listagem de endpoints e interface de testes
-Outro aspecto que torna essas ferramentas muito úteis é a geração automática de uma interface que permite ao desenvolvedor 
-não apenas acessar a listagem dos endpoints disponíveis na API, mas também entender os contratos de cada recurso e realizar 
+
+Outro aspecto que torna essas ferramentas muito úteis é a geração automática de uma interface que permite ao desenvolvedor
+não apenas acessar a listagem dos endpoints disponíveis na API, mas também entender os contratos de cada recurso e realizar
 chamadas de teste para verificar o comportamento dos endpoints.
+
 ### Exemplos
+
 Exemplos de ferramentas de documentação automática de API incluem:
+
 - Swagger
 - RAML
 - API Blueprint
 
+# Testabilidade
+
+## Introdução
+
+## Motivação

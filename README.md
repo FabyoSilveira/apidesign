@@ -10,8 +10,8 @@ para desenvolver uma aplicação segura, robusta e escalável.
 - Autenticação e Autorização
 - Monitoramento
 - Documentação
-- Tratamento de Falhas
 - Testabilidade
+- Tratamento de Falhas
 
 # Versionamento
 
@@ -439,3 +439,30 @@ e testes que refletem muito bem a corretude do código, pois se beneficiam basta
 
 Além disso, pode ser uma excelente estratégia para pessoas que não tem tanta experiência programando, e que enfretariam dificuldade em
 desenvolver incorporando bem os princípios SOLID e Clean Code.
+
+# Tratamento de Falhas
+
+## Introdução
+Precisamos sempre ter em mente que o cenário esperado chamado de "caminho feliz" na maior parte das vezes não é o único que nosso 
+código irá processar. Um tratamento eficaz de falhas contribue com a robustez da aplicação, mesmo diante de imprevistos, proporcionando 
+um serviço mais confiável para o usuário.
+
+## Programação Defensiva
+É essencial mantermos uma mentalidade de programação defensiva para que nossa aplicação lide bem com cenários de erro. A ideia não é somente tentar impedir que erros 
+ocorram, mas sim, dado que eles inevitavelmente ocorrerão, determinar como nossa aplicação reagirá a eles.
+
+O objetivo dessa abordagem é programar de uma forma que, mesmo em casos de erro, nosso serviço:
+  - Não pare de funcionar.
+  - Forneça uma resposta previsível ao usuário (por exemplo, um erro tratado).
+  - Mantenha a aplicação em um estado consistente, mesmo que isso signifique desfazer alguma ação ou ficar temporariamente indisponível.
+
+## Circuit Breaker
+Este é um padrão fundamental no tratamento de falhas em APIs. Ele busca evitar erros em cascata, especialmente em cenários onde um serviço depende de vários outros para funcionar, ou vários outros dependem dele.
+
+Funciona como um disjuntor em um circuito elétrico: configuramos uma taxa de erros de X%. Caso o serviço atinja essa taxa, o disjuntor desarma e o serviço deixa de ser chamado, retornando uma resposta pré-configurada. Esta resposta pode ser um erro tratado ou uma resposta previamente salva em cache, que não depende de uma nova chamada ao serviço com problema.
+
+Este padrão atribui aos serviços três estados para controle:
+  - Closed: Quando a taxa de erro não atingiu o valor pré-definido e o sistema funciona normalmente.
+  - Open: Quando a taxa de erro atinge o valor pré-definido, o circuit breaker entra em ação, interrompendo a chamada do serviço e retornando apenas a resposta padrão configurada.
+  - Half-Open: Após um tempo no estado Open, permite que algumas chamadas sejam feitas para verificar se o erro ainda ocorre. Caso os erros tenham parado, retorna ao estado Closed, interrompendo a ação do circuit breaker.
+

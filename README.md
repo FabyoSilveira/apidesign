@@ -472,10 +472,26 @@ O objetivo dessa abordagem é programar de uma forma que, mesmo em casos de erro
 
 Este é um padrão fundamental no tratamento de falhas em APIs. Ele busca evitar erros em cascata, especialmente em cenários onde um serviço depende de vários outros para funcionar, ou vários outros dependem dele.
 
-Funciona como um disjuntor em um circuito elétrico: configuramos uma taxa de erros de X%. Caso o serviço atinja essa taxa, o disjuntor desarma e o serviço deixa de ser chamado, retornando uma resposta pré-configurada. Esta resposta pode ser um erro tratado ou uma resposta previamente salva em cache, que não depende de uma nova chamada ao serviço com problema.
+### Como funciona
+
+É semelhante ao disjuntor em um circuito elétrico: configuramos uma taxa de erros de X%. Caso o serviço atinja essa taxa, o disjuntor desarma e o serviço deixa de ser chamado, retornando uma resposta pré-configurada. Esta resposta pode ser um erro tratado ou uma resposta previamente salva em cache, que não depende de uma nova chamada ao serviço com problema.
 
 Este padrão atribui aos serviços três estados para controle:
 
 - Closed: Quando a taxa de erro não atingiu o valor pré-definido e o sistema funciona normalmente.
 - Open: Quando a taxa de erro atinge o valor pré-definido, o circuit breaker entra em ação, interrompendo a chamada do serviço e retornando apenas a resposta padrão configurada.
 - Half-Open: Após um tempo no estado Open, permite que algumas chamadas sejam feitas para verificar se o erro ainda ocorre. Caso os erros tenham parado, retorna ao estado Closed, interrompendo a ação do circuit breaker.
+
+## Retry Pattern
+
+O Retry Pattern é utilizado para lidar com falhas temporárias em APIs e serviços web. Ele define uma estratégia para tentar executar uma operação novamente quando ela falha, com base em critérios predefinidos. Esse padrão, é uma técnica poderosa para melhorar a resiliência dos serviços em priorizar uma resposta bem sucedida. Por fim, ele oferece uma maneira de lidar com falhas temporárias de forma controlada, reduzindo a taxa de respostas malsucedidas.
+
+### Como funciona
+
+Na prática, programamos um serviço para repetir o processo um número específcio de vezes caso ele falhe. Além disso, definimos alguns critérios que podem variar de contexto para contexto com o objetivo de maximizar os ganhos.
+
+Em geral, três critérios são configurados, sendo eles:
+
+- Número de tentativas: Quantas vezes a operação deve ser repetida antes de falhar definitivamente.
+- Intervalo entre tentativas: O tempo de espera entre cada tentativa.
+- Backoff exponencial: Aumenta progressivamente o intervalo entre tentativas, para evitar sobrecarga no sistema.

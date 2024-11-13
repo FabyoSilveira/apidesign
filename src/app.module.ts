@@ -7,7 +7,13 @@ import { AppService } from './app.service';
 import { Modules } from './modules';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ...Modules],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    ...Modules,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

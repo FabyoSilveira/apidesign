@@ -1,68 +1,122 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-
-import { AxiosInstance } from 'axios';
+import { firstValueFrom } from 'rxjs';
+import {
+  TMDBMovie,
+  TMDBPerson,
+  TMDBFindResponse,
+  TMDBSearchMovieResponse,
+  TMDBSearchPersonResponse,
+} from './types';
 
 @Injectable()
 export class MovieClient {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly httpClient: AxiosInstance,
-  ) {
-    const accessKey = this.configService.get<string>('TMDB_ACCESS_TOKEN');
-    const baseUrl = this.configService.get<string>('TMDB_API_BASE_URI');
+  constructor(private readonly httpClient: HttpService) {}
 
-    if (!accessKey) {
-      throw new Error('TMDB_ACCESS_TOKEN is not defined in .env file');
-    }
-
-    if (!baseUrl) {
-      throw new Error('TMDB_API_BASE_URI is not defined in .env file');
-    }
-  }
-
-  async getMovieById(movieId: number): Promise<any> {
+  async getMovieByIMDBId(movieId: string): Promise<TMDBMovie> {
     try {
-      return this.httpClient.get(
-        `https://api.themoviedb.org/3/movie/${movieId}`,
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxYzg1ZTkwYzQyYTNkODEyNTM0ZGU0Yjg5NzQ1MDNkNyIsIm5iZiI6MTcyOTU2NjY0Ny4zNjA5OTk4LCJzdWIiOiI2NzE3MTdiNzUwYTZlYjBiZmJjMjc0MTQiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.0csEIyfhIRfbj2KRX-ACnzT_M8KmukpVL9huf48cxiI`,
+      const response = await firstValueFrom(
+        this.httpClient.get<TMDBFindResponse>(
+          `/find/${movieId}?external_source=imdb_id`,
+        ),
+      );
+
+      if (response.data.movie_results.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            data: {
+              message:
+                'O filme que você procura não pode ser encontrado! Confira se o ID do Imdb está correto!',
+            },
           },
-        },
-      );
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return response.data.movie_results[0];
     } catch (error) {
-      this.handleError(error);
+      throw error;
     }
   }
 
-  async searchMovies(query: string): Promise<any> {
+  async getPersonByIMDBId(personId: string): Promise<TMDBPerson> {
     try {
-      return this.httpClient.get('/search/movie', {
-        params: { query },
-      });
+      const response = await firstValueFrom(
+        this.httpClient.get<TMDBFindResponse>(
+          `/find/${personId}?external_source=imdb_id`,
+        ),
+      );
+
+      if (response.data.person_results.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            data: {
+              message:
+                'O ator ou atriz que você procura não pode ser encontrado! Confira se o ID do Imdb está correto!',
+            },
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return response.data.person_results[0];
     } catch (error) {
-      this.handleError(error);
+      throw error;
     }
   }
 
-  private handleError(error: any): never {
-    if (error.response) {
-      throw new HttpException(
-        {
-          status: error.response.status,
-          error:
-            error.response.data.status_message || 'Unknown error from TMDB API',
-        },
-        HttpStatus.BAD_REQUEST,
+  async searchMovies(query: string): Promise<TMDBMovie[]> {
+    try {
+      const response = await firstValueFrom(
+        this.httpClient.get<TMDBSearchMovieResponse>('/search/movie', {
+          params: { query },
+        }),
       );
+
+      if (response.data.results.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            data: {
+              message: 'Nenhum filme foi encontrado para o nome pesquisado!',
+            },
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return response.data.results;
+    } catch (error) {
+      throw error;
     }
-    throw new HttpException(
-      {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: 'Internal Server Error',
-      },
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+  }
+
+  async searchPerson(query: string): Promise<TMDBPerson[]> {
+    try {
+      const response = await firstValueFrom(
+        this.httpClient.get<TMDBSearchPersonResponse>('/search/person', {
+          params: { query },
+        }),
+      );
+
+      if (response.data.results.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            data: {
+              message:
+                'Nenhum ator ou atriz foi encontrado para o nome pesquisado!',
+            },
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return response.data.results;
+    } catch (error) {
+      throw error;
+    }
   }
 }

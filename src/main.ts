@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
@@ -11,6 +11,10 @@ async function bootstrap() {
 
   //Activate pipe that validate data on entry with class validator
   app.useGlobalPipes(new ValidationPipe());
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   //Config SWAGGER Auto documentation
   const config = new DocumentBuilder()

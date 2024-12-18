@@ -5,6 +5,7 @@ import { MovieService } from './movie.service';
 import { MovieClient } from './movie.client';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { HttpModule } from '@nestjs/axios';
         },
       }),
     }),
+    AuthModule,
   ],
   exports: [MovieService],
   controllers: [MovieController],

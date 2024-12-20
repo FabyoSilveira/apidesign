@@ -10,7 +10,7 @@ import {
 } from './types';
 
 @Injectable()
-export class MovieClient {
+export class TmdbClient {
   constructor(private readonly httpClient: HttpService) {}
 
   async getMovieByIMDBId(movieId: string): Promise<TMDBMovie> {

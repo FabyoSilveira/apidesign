@@ -10,21 +10,37 @@ export class MovieController {
 
   @Get('/search')
   async searchMovies(@Query('name') query: string): Promise<any> {
-    return this.movieService.searchMovies(query);
+    try {
+      return this.movieService.searchMovies(query);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get(':id')
   async getMovieByIMDBId(@Param('id') id: string): Promise<any> {
-    return this.movieService.getMovieByIMDBId(id);
+    try {
+      return this.movieService.getMovieByIMDBId(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('/actors/search')
   async searchPerson(@Query('name') query: string): Promise<any> {
-    return this.movieService.searchPerson(query);
+    try {
+      return this.movieService.searchPerson(query);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('/actors/:id')
   async getPersonByIMDBId(@Param('id') id: string): Promise<any> {
-    return this.movieService.getPersonByIMDBId(id);
+    try {
+      return this.movieService.getPersonByIMDBId(id);
+    } catch (error) {
+      throw error;
+    }
   }
 }

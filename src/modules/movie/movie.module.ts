@@ -2,29 +2,16 @@ import { Module } from '@nestjs/common';
 
 import { MovieController } from './movie.controller';
 import { MovieService } from './movie.service';
-import { MovieClient } from './movie.client';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { HttpModule } from '@nestjs/axios';
+import { MovieClientAdapter } from './movie.adapter';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module';
+import { TmdbClientModule } from 'src/client/tmdb/tmdb.module';
+import { MovieDomainMapper } from './mappper';
 
 @Module({
-  imports: [
-    ConfigModule,
-    HttpModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        baseURL: configService.get<string>('TMDB_API_BASE_URI'),
-        timeout: 10000,
-        headers: {
-          Authorization: `Bearer ${configService.get<string>('TMDB_ACCESS_TOKEN')}`,
-        },
-      }),
-    }),
-    AuthModule,
-  ],
+  imports: [ConfigModule, AuthModule, TmdbClientModule],
   exports: [MovieService],
   controllers: [MovieController],
-  providers: [MovieService, MovieClient],
+  providers: [MovieService, MovieClientAdapter, MovieDomainMapper],
 })
 export class MovieModule {}

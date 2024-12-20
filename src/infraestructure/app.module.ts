@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { Modules } from './modules';
-import { ErrorInterceptor } from './modules/infraestructure/error.interceptor';
+import { Modules } from '../modules';
+import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { Clients } from 'src/client';
 
 @Module({
   imports: [
@@ -21,15 +20,14 @@ import { seconds, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       },
     ]),
     ...Modules,
+    ...Clients,
   ],
-  controllers: [AppController],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: ErrorInterceptor },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    AppService,
   ],
 })
 export class AppModule {}

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MovieClient } from './movie.client';
+import { MovieClientAdapter } from './movie.adapter';
 
 @Injectable()
 export class MovieService {
-  constructor(private readonly movieClient: MovieClient) {}
+  constructor(private readonly movieClient: MovieClientAdapter) {}
 
   async getMovieByIMDBId(id: string): Promise<any> {
     return this.movieClient.getMovieByIMDBId(id);

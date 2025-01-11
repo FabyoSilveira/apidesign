@@ -200,13 +200,12 @@ Com ferramentas como o Swagger, é possível manter a documentação sempre atua
 
 ## Introdução
 
-No campo de desenvolvimento de software, é amplamente reconhecida a importância de escrever testes para garantir que a aplicação
-funcione como esperado e para minimizar a introdução de erros ocultos. No entanto, para alcançar uma boa cobertura de testes,
-é fundamental que o software seja estruturado e construído de maneira que facilite os testes. Caso contrário, o processo de escrever
-e testar toda a aplicação pode tornar-se extremamente difícil, e os testes podem não assegurar com tanta precisão a corretude do código.
-
-Essa característica, que determina a facilidade de testar um software e a eficácia dos testes em refletir a conformidade com os requisitos,
+A característica, que determina a facilidade de testar um software e a eficácia dos testes em refletir a conformidade com os requisitos,
 é chamada de testabilidade.
+
+A testabilidade é um pilar fundamental no desenvolvimento de APIs robustas, pois garante que a funcionalidade dos serviços possa ser validada de
+forma eficiente, ajudando a prevenir erros e a acelerar o desenvolvimento com segurança. APIs bem projetadas são naturalmente mais testáveis,
+permitindo a aplicação de testes unitários, de integração e automatizados com facilidade.
 
 Quanto maior a cobertura e a qualidade dos testes de uma API, maior é a segurança ao evoluir o software e lançar versões estáveis.
 Isso ocorre porque os testes atuam como uma barreira que garante que, apesar das alterações, tudo continue funcionando corretamente,
@@ -216,13 +215,25 @@ Dada a importância da cobertura de testes no desenvolvimento de APIs, facilitar
 Por isso, a testabilidade é essencial, pois torna mais fácil escrever testes e aumenta a eficácia deles, simplificando e melhorando
 significativamente esse aspecto do desenvolvimento.
 
-## Como melhorar a testabilidade do seu software?
+## A Base da Testabilidade
 
-A testabilidade de um código está diretamente relacionada à sua qualidade. Um código bem escrito, modularizado e fácil de manter
-geralmente possui alta testabilidade. Portanto, dois dos principais guias para escrever um bom código são fundamentais na construção
-de um software altamente testável: SOLID e Clean Code.
+A API foi construída com uma arquitetura modular, onde cada funcionalidade está separada em módulos distintos. Essa separação de responsabilidades
+facilita não apenas a manutenção do código, mas também a escrita de testes, pois cada módulo pode ser testado de forma independente. Além disso,
+a adoção de práticas como Clean Code e os princípios SOLID durante o desenvolvimento garantiu que o código fosse claro, coeso e com baixo acoplamento,
+características essenciais para uma alta testabilidade.
 
-## Descrição da implementação
+## Testes Automatizados
+
+- Testes Unitários: Foram implementados testes automatizados para todas as classes de controladores e serviços em cada módulo da aplicação. Esses testes validam o comportamento isolado de cada unidade de código, garantindo que os métodos e funcionalidades individuais funcionem conforme o esperado. No contexto do NestJS, o suporte integrado a bibliotecas de testes, como Jest, facilita a criação de testes com cenários reais utilizando mocks e injeção de dependências.
+- Testes do Cliente de Movies: Um conjunto específico de testes foi desenvolvido para o cliente de movies, validando sua comunicação com APIs externas e garantindo a integridade dos dados que alimentam a aplicação.
+
+## Benefícios do framework
+
+O NestJS oferece recursos que tornam a aplicação mais testável por design. O suporte à injeção de dependências, modularização e ferramentas nativas de testes cria um ambiente propício para a escrita de testes abrangentes e organizados. Além disso, a possibilidade de isolar facilmente os componentes do sistema reduz o esforço necessário para configurar cenários de teste.
+
+## Conclusão
+
+Combinando uma arquitetura bem planejada, princípios sólidos de design e ferramentas automatizadas, a API foi estruturada para garantir alta testabilidade. Isso não apenas assegura que os serviços funcionem como esperado, mas também prepara o sistema para evoluir com segurança, reduzindo riscos e facilitando a detecção de problemas durante o ciclo de desenvolvimento.
 
 # Tratamento de Falhas
 

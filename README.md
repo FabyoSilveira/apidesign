@@ -1,99 +1,211 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# API Design
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Introdução
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+APIs (Application Programming Interfaces) são interfaces que permitem a comunicação entre diferentes sistemas, aplicações ou serviços,
+facilitando o compartilhamento de dados e funcionalidades. Atualmente, elas desempenham um papel fundamental no desenvolvimento de software, pois promovem a integração
+e a escalabilidade de sistemas.
 
-## Description
+# Motivação
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Uma aplicação com boas decisões de design é essencial para garantir sua usabilidade, segurança, manutenibilidade e eficiência. Um design bem feito assegura
+que as APIs sejam intuitivas para desenvolvedores, reduzindo o tempo de aprendizado e os erros de utilização. Além disso, APIs bem projetadas
+promovem consistência, facilitam a adaptação a mudanças futuras e maximizam o impacto que podem gerar no contexto em que estão inseridas.
 
-## Project setup
+O tema pode assumir diferentes representações na prática, considerando a variedade de tecnologias disponíveis para a construção de aplicações. Essa diversidade
+evidencia a necessidade de desenvolver uma aplicação utilizando ferramentas específicas, a fim de aplicar concretamente os conceitos discutidos no
+artigo da primeira entrega.
 
-```bash
-$ npm install
-```
+# Objetivo
 
-## Compile and run the project
+Este projeto tem como objetivo o desenvolvimento de uma API que sirva como um guia prático, contemplando todos os tópicos indispensáveis na construção
+de uma boa aplicação. O foco da API implementada não são seus requisitos funcionais, mas sim aspectos não funcionais, compostos pelas decisões de
+design e arquitetura.
 
-```bash
-# development
-$ npm run start
+Este documento abordará, de forma técnica, como cada tópico foi implementado.
 
-# watch mode
-$ npm run start:dev
+# Contexto da API
 
-# production mode
-$ npm run start:prod
-```
+A aplicação foi desenvolvida utilizando a linguagem de programação javascript em conjunto com o framework NestJS.
 
-## Run tests
+O contexto escolhido para a API de exemplo foi o universo de filmes. Ela utiliza como client a API do The Movie Database ([TMDb](https://developer.themoviedb.org/docs/getting-started)), abstraindo
+e utilizando os serviços disponíveis nesse client para compor os seus próprios serviços. A API permite a busca por filmes, atores,
+avaliações e outros dados relacionados, garantindo que os consumidores possam acessar essas informações de forma simplificada e bem estruturada.
 
-```bash
-# unit tests
-$ npm run test
+# Tópicos indispensáveis na construção do design da API
 
-# e2e tests
-$ npm run test:e2e
+O levantamento e estudo de todos esses tópicos foi realizado no projeto da POC1, e o artigo construído foi usado como base para o levantamento dos requisitos
+de implementação do sistema de exemplo. Os tópicos implementados estão listados abaixo:
 
-# test coverage
-$ npm run test:cov
-```
+- Versionamento
+- Rate Limits
+- Autenticação e Autorização
+- Monitoramento
+- Documentação
+- Testabilidade
+- Tratamento de Falhas
 
-## Deployment
+# Versionamento
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Introdução
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+O desenvolvimento de software é um processo de construção extremamente dinâmico e
+mutável. Isso significa que durante o desenvolvimento, os requisitos certamente irão mudar
+e novos requisitos surgirão com mais frequência do que gostaríamos. Além disso, o próprio
+processo de construir envolve mudanças de planejamento e refatorações ao longo
+do tempo, mesmo que não haja alteração nos requisitos.
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+Esse contexto também se aplica na implementação de APIs. O ciclo descrito é bastante
+desafiador quando falamos de uma API em construção que ainda não foi publicada em
+produção. Na maior parte do tempo, isso ocorre enquanto nossa API já está no ar
+e possui usuários ativos que dependem dela. Nesse caso, como garantir que o usuário final
+não seja afetado pelas alterações que realizamos em nossa API? Em caso de alterações
+indispensáveis que afetem o usuário final, como comunicar isso de forma assertiva e
+clara? A resposta reside em possuir uma boa estratégia de versionamento.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Descrição da implementação
 
-## Resources
+# Rate Limits
 
-Check out a few resources that may come in handy when working with NestJS:
+## Introdução
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Como tudo no nosso mundo, os recursos de uma API também são limitados e devem ser gerenciados.
+Rate Limits é a técnica utilizada para controlar a taxa de requisições feitas para uma API, com
+o objetivo de proteger os recursos do uso excessivo.
 
-## Support
+Qual a razão para me preocupar com taxa de requisições?
+O principal motivo para implementar Rate Limit, é evitar que sua API sofra com lentidão
+ao atender novos requests ou até mesmo fique fora do ar. Isso pode ocorrer por alta demanda
+dos seus serviços e também ser ocasionado por ataques maliciosos. Além de aumentar a
+segurança de sua API, os limites de requisições são fundamentais para gerenciar de forma
+saudável o uso de seus usuários legítimos. Logo, o foco é manter os recursos da sua API
+disponíveis para todos os seus usuários a todo momento. Podemos citar como bônus de todos
+esses benefícios, a redução e controle dos custos da sua API.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Descrição da implementação
 
-## Stay in touch
+O recurso utilizado no contexto do NestJS para implementar esse conceito foi o ThrottlerModule. Esse módulo permite configurar regras de limite de requisições de
+forma centralizada, aplicada por padrão a todas as rotas, ou de forma personalizada para rotas ou controladores específicos. O Throttler atua interceptando requisições
+e verificando, com base no IP do cliente, se o limite de requisições foi excedido. Caso ultrapasse o limite, o módulo bloqueia a requisição e retorna
+um erro adequado.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Na minha aplicação, configurei um limite geral de 10 requisições por IP a cada 30 segundos, aplicado a todas as rotas como padrão. Esse comportamento foi implementado diretamente no módulo principal. Além disso, criei um provider para expor o ThrottlerGuard a todos os módulos, possibilitando o uso do conceito de Guards
+exemplificado anteriormente no AuthModule, visando aplicar limites a rotas ou controladores.
 
-## License
+No contexto dessa API, implementei um controle mais restritivo apenas na rota de login. Como se trata de uma rota sensível, sujeita a ataques maliciosos, apliquei um rate limit de 10 requisições a cada 10 minutos. Isso ajuda a proteger a API de tentativas de força bruta e de acessos indevidos.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+A utilização de rate limits, torna a API mais segura e garante uma melhor disponibilidade dos recursos. Dessa forma, esse tópico é fundamental no design de APIs modernas.
+
+# Autenticação e Autorização
+
+## Introdução
+
+Esse é um dos temas centrais quando se pensa em segurança de uma aplicação. Apesar de cada
+um desses termos se referirem a processos distintos, ambos trabalham juntos para garantir
+a segurança de uma API.
+
+## Descrição da implementação
+
+A implementação de autenticação e autorização é uma etapa essencial no desenvolvimento de APIs seguras e confiáveis. Esses dois conceitos têm papéis distintos,
+mas complementares: enquanto a autenticação garante que a identidade do usuário seja validada, a autorização controla o acesso aos recursos da API com
+base nas permissões desse usuário.
+
+Nessa API, utilizei um design baseado em tokens JWT (JSON Web Tokens), um padrão amplamente utilizado para autenticação. Um JWT
+é um token criptografado compacto e seguro, usado para transmitir informações entre as partes envolvidas de maneira confiável. Ele contém três partes principais:
+
+- Cabeçalho (Header): Indica o tipo de token e o algoritmo de assinatura.
+- Carga útil (Payload): Armazena informações sobre o usuário, no caso da nossa API ele armazena o objeto { id, username, email }.
+- Assinatura (Signature): Garante a integridade do token, evitando adulterações.
+
+O fluxo geral de autenticação utilizando JWT funciona assim: quando um usuário realiza login com credenciais válidas, o sistema gera um token JWT, que
+é enviado ao cliente. Em todas as requisições subsequentes, o cliente inclui esse token no cabeçalho da requisição para acessar os recursos protegidos.
+A API, por sua vez, valida o token para garantir que ele seja legítimo e não tenha expirado.
+
+No contexto do NestJS, essa lógica foi encapsulada no módulo AuthModule, mantendo a aplicação modular e escalável. Os serviços como cadastro (signup) e autenticação (login) do AuthModule, foram possibilitadas pelas funções de buscar e cadastrar usuários fornecidas pelo UserModule. Além disso, as senhas dos usuários são armazenadas e manipuladas de forma segura utilizando criptografia, como o bcrypt, para impedir que sejam expostas em caso de violações de dados.
+
+Já a autorização foi implementada verificando o token recebido em cada requisição protegida. Isso foi feito com um mecanismo que intercepta as requisições
+antes que elas cheguem aos controladores verificando a validade do token e extraindo as informações do usuário para que possam ser utilizadas pela aplicação. Na
+aplicação, nomeamos a classe que implementa a autorização de AuthGuard e por meio do NestJS ela pode ser aplicada tanto a nível de rotas quanto a
+nível dos controladores. Essa abordagem é recomendada ao separar as responsabilidades de autenticação e autorização, além de permitir que sejam aplicadas de forma consistente em toda a API.
+
+Esse modelo de design com JWT permite criar APIs sem estado, onde o servidor não precisa manter informações de sessão para cada usuário. Isso é ideal para aplicações escaláveis, já que os tokens contêm todas as informações necessárias para validar o acesso. No caso do NestJS, a integração nativa com ferramentas de proteção, como guards e módulos dedicados, torna essa implementação robusta e de fácil manutenção.
+
+# Monitoramento
+
+## Introdução
+
+O monitoramento de APIs é a prática de observar e analisar o comportamento de uma aplicação em produção.
+Durante esse processo, vários fatores são avaliados, sendo os principais: performance, disponibilidade
+e taxa de falhas.
+
+Ao expor uma API para os usuários, é imprescindível que dediquemos esforço para entregarmos uma interface
+que funcione, esteja disponível a maior parte do tempo e seja segura. Sem o monitoramento, essa tarefa se
+tornaria muito difícil ou quase impossível, visto que não teríamos visibilidade sobre o comportamento da
+nossa aplicação em produção.
+
+## Descrição da implementação
+
+# Documentação
+
+## Introdução
+
+Este tópico aborda o conteúdo que descreve como utilizar uma API. Uma documentação clara e objetiva é fundamental
+para facilitar o uso da API pelos clientes, funcionando como um manual de instruções sobre a utilização do software.
+
+A documentação pode existir em diferentes formatos e linguagens. Essas representações diversas podem ser usadas
+para documentar um mesmo projeto e serem complementares entre si. Não necessariamente é preciso escolher apenas
+uma delas para documentar um projeto de software.
+
+As APIs podem oferecer funcionalidades extremamente complexas por meio de abstrações simplificadas. No entanto,
+de que serve uma API se as abstrações fornecidas não estão bem documentadas? Se o processo de utilização dessas
+abstrações se tornar problemático, a reutilização ainda faz sentido? Em alguns casos, pode ser mais vantajoso
+reimplementar essas funcionalidades do zero.
+
+Para evitar que isso aconteça com nosso projeto de API, é essencial desenvolver uma estratégia de documentação que
+auxilie o desenvolvedor e facilite o uso de nossas abstrações. Assim, garantimos que reutilizar seja menos problemático
+do que reimplementar.
+
+## Documentação automática
+
+Atualmente, existem diversas ferramentas que têm como objetivo documentar uma API de forma automática. Essas ferramentas
+podem ser complementos importantes no conjunto de conteúdos sobre a utilização da sua API.
+
+## Descrição da implementação
+
+# Testabilidade
+
+## Introdução
+
+No campo de desenvolvimento de software, é amplamente reconhecida a importância de escrever testes para garantir que a aplicação
+funcione como esperado e para minimizar a introdução de erros ocultos. No entanto, para alcançar uma boa cobertura de testes,
+é fundamental que o software seja estruturado e construído de maneira que facilite os testes. Caso contrário, o processo de escrever
+e testar toda a aplicação pode tornar-se extremamente difícil, e os testes podem não assegurar com tanta precisão a corretude do código.
+
+Essa característica, que determina a facilidade de testar um software e a eficácia dos testes em refletir a conformidade com os requisitos,
+é chamada de testabilidade.
+
+Quanto maior a cobertura e a qualidade dos testes de uma API, maior é a segurança ao evoluir o software e lançar versões estáveis.
+Isso ocorre porque os testes atuam como uma barreira que garante que, apesar das alterações, tudo continue funcionando corretamente,
+ou indicam quando precisam ser ajustados para se adequar a novas funcionalidades ou correções.
+
+Dada a importância da cobertura de testes no desenvolvimento de APIs, facilitar sua implementação e aumentar sua eficiência é crucial.
+Por isso, a testabilidade é essencial, pois torna mais fácil escrever testes e aumenta a eficácia deles, simplificando e melhorando
+significativamente esse aspecto do desenvolvimento.
+
+## Como melhorar a testabilidade do seu software?
+
+A testabilidade de um código está diretamente relacionada à sua qualidade. Um código bem escrito, modularizado e fácil de manter
+geralmente possui alta testabilidade. Portanto, dois dos principais guias para escrever um bom código são fundamentais na construção
+de um software altamente testável: SOLID e Clean Code.
+
+## Descrição da implementação
+
+# Tratamento de Falhas
+
+## Introdução
+
+Precisamos sempre ter em mente que o cenário esperado chamado de "caminho feliz" na maior parte das vezes não é o único que nosso
+código irá processar. Um tratamento eficaz de falhas contribui para a robustez da aplicação, mesmo diante de imprevistos, proporcionando
+um serviço mais confiável ao usuário.
+
+## Descrição da implementação

@@ -65,6 +65,32 @@ clara? A resposta reside em possuir uma boa estratégia de versionamento.
 
 ## Descrição da implementação
 
+Na API desenvolvida, implementei o versionamento de recursos utilizando uma abordagem baseada em URIs. Isso significa que a versão é identificada
+diretamente no caminho das rotas, como /v1/resource, tornando o versionamento explícito e facilmente reconhecível pelos consumidores de cada recurso.
+
+### Padrão de Versão MMP
+
+Adotamos o padrão MMP (Major.Minor.Patch) para definir a versão da API, que funciona da seguinte forma:
+
+- Major (Mudanças Principais): Indica alterações significativas que podem quebrar a compatibilidade com versões anteriores.
+- Minor (Novas Funcionalidades): Introduz novas funcionalidades sem afetar os recursos existentes.
+- Patch (Correções): Refere-se a pequenas melhorias ou correções de bugs sem alterar o comportamento geral da API.
+
+A versão atual da API foi estabelecida como 1.0.1, refletindo seu estado inicial, com uma base estável e melhorias incrementais.
+
+### Implementação no NestJS
+
+O módulo de filmes, principal e mais utilizado na API, teve seu versionamento configurado diretamente nos controladores. No NestJS, é possível
+definir a versão de um controlador no próprio decorador da classe, o que facilita a aplicação automática de prefixos como v1 em todas as rotas pertencentes a ele.
+Por exemplo, o controlador do módulo de filmes foi configurado para usar o prefixo /v1/movie, garantindo que todas as rotas desse módulo estejam claramente associadas à versão 1.
+
+Essa abordagem traz duas vantagens importantes:
+
+- Flexibilidade para manutenção: No futuro, será possível introduzir novas versões do módulo (como /v2/movie) sem descontinuar a versão anterior imediatamente, permitindo uma transição suave para os usuários.
+- Organização e clareza: Ao versionar diretamente no decorador do controlador, o código permanece limpo e centralizado, refletindo claramente as versões disponíveis.
+
+Embora o versionamento seja uma necessidade mais evidente à medida que a API cresce e atinge um público maior, é uma boa prática estruturar desde o início com suporte a múltiplas versões. Isso evita retrabalho e garante que a API possa evoluir sem impactar negativamente os consumidores que dependem dela.
+
 # Rate Limits
 
 ## Introdução
@@ -152,25 +178,23 @@ nossa aplicação em produção.
 Este tópico aborda o conteúdo que descreve como utilizar uma API. Uma documentação clara e objetiva é fundamental
 para facilitar o uso da API pelos clientes, funcionando como um manual de instruções sobre a utilização do software.
 
-A documentação pode existir em diferentes formatos e linguagens. Essas representações diversas podem ser usadas
-para documentar um mesmo projeto e serem complementares entre si. Não necessariamente é preciso escolher apenas
-uma delas para documentar um projeto de software.
-
-As APIs podem oferecer funcionalidades extremamente complexas por meio de abstrações simplificadas. No entanto,
-de que serve uma API se as abstrações fornecidas não estão bem documentadas? Se o processo de utilização dessas
-abstrações se tornar problemático, a reutilização ainda faz sentido? Em alguns casos, pode ser mais vantajoso
-reimplementar essas funcionalidades do zero.
-
-Para evitar que isso aconteça com nosso projeto de API, é essencial desenvolver uma estratégia de documentação que
-auxilie o desenvolvedor e facilite o uso de nossas abstrações. Assim, garantimos que reutilizar seja menos problemático
-do que reimplementar.
-
-## Documentação automática
-
-Atualmente, existem diversas ferramentas que têm como objetivo documentar uma API de forma automática. Essas ferramentas
-podem ser complementos importantes no conjunto de conteúdos sobre a utilização da sua API.
+A documentação é um componente essencial para qualquer API, pois ela serve como a principal interface entre os desenvolvedores que consomem os serviços e os que os implementam. Uma documentação clara e acessível reduz a curva de aprendizado, minimiza dúvidas e erros, e acelera o desenvolvimento de integrações. Para APIs menores ou de exemplo, uma abordagem eficiente e prática é a geração automática de documentação.
 
 ## Descrição da implementação
+
+Para esse projeto, foi utilizado o Swagger, uma ferramenta conhecida no mercado para documentação de APIs. Ele se destaca por sua interface intuitiva e por permitir que desenvolvedores explorem os serviços e contratos de uma API de forma visual e interativa. Por ser amplamente difundida, sua aceitação e compreensão por equipes de diferentes níveis de experiência é facilitada.
+
+O NestJS fornece suporte nativo para a integração com o Swagger, o que torna o processo de documentação mais centralizado. A configuração foi feita utilizando as classes DocumentBuilder e SwaggerModule, oferecidas pelo framework. Esses recursos permitem configurar o título da documentação, uma breve descrição do contexto da API e outras informações como versão e tags.
+
+Uma vez configurada, a documentação é gerada automaticamente. O Swagger lista todas as rotas disponíveis, seus contratos de entrada e saída, e os parâmetros esperados. Além disso, ele oferece uma interface que permite realizar chamadas diretamente da documentação, o que é especialmente útil para testes rápidos, para validar o comportamento dos serviços e para entender o funcionamento de cada recurso por meio de testes reais.
+
+## Benefícios da Abordagem Automática
+
+- Eficiência: Com o Swagger integrado ao código, a documentação é atualizada automaticamente conforme novos serviços ou alterações são adicionados à API. Isso elimina a necessidade de manutenção manual, reduzindo erros e inconsistências.
+- Interatividade: A interface permite que os desenvolvedores explorem os serviços diretamente, testando endpoints e verificando retornos sem a necessidade de ferramentas externas.
+- Acessibilidade: A documentação gerada pelo Swagger é visual, organizada e de fácil navegação, ajudando tanto desenvolvedores experientes quanto iniciantes.
+
+Com ferramentas como o Swagger, é possível manter a documentação sempre atualizada e integrada ao fluxo de desenvolvimento, sem comprometer a simplicidade. Essa abordagem é especialmente útil em projetos menores, mas também escalável para APIs maiores.
 
 # Testabilidade
 

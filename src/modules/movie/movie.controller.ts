@@ -2,9 +2,11 @@ import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 
 import { MovieService } from './movie.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { UseCircuitBreaker } from 'src/utils';
 
 @Controller({ path: 'movie', version: '1' })
 @UseGuards(AuthGuard)
+@UseCircuitBreaker()
 export class MovieController {
   constructor(private movieService: MovieService) {}
 

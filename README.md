@@ -124,6 +124,8 @@ exemplificado anteriormente no AuthModule, visando aplicar limites a rotas ou co
 
 No contexto dessa API, implementei um controle mais restritivo apenas na rota de login. Como se trata de uma rota sensível, sujeita a ataques maliciosos, apliquei um rate limit de 10 requisições a cada 10 minutos. Isso ajuda a proteger a API de tentativas de força bruta e de acessos indevidos.
 
+## Conclusão
+
 A utilização de rate limits, torna a API mais segura e garante uma melhor disponibilidade dos recursos. Dessa forma, esse tópico é fundamental no design de APIs modernas.
 
 # Autenticação e Autorização

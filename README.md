@@ -215,6 +215,8 @@ Dada a importância da cobertura de testes no desenvolvimento de APIs, facilitar
 Por isso, a testabilidade é essencial, pois torna mais fácil escrever testes e aumenta a eficácia deles, simplificando e melhorando
 significativamente esse aspecto do desenvolvimento.
 
+## Descrição da implementação
+
 ## A Base da Testabilidade
 
 A API foi construída com uma arquitetura modular, onde cada funcionalidade está separada em módulos distintos. Essa separação de responsabilidades
@@ -239,8 +241,41 @@ Combinando uma arquitetura bem planejada, princípios sólidos de design e ferra
 
 ## Introdução
 
-Precisamos sempre ter em mente que o cenário esperado chamado de "caminho feliz" na maior parte das vezes não é o único que nosso
-código irá processar. Um tratamento eficaz de falhas contribui para a robustez da aplicação, mesmo diante de imprevistos, proporcionando
-um serviço mais confiável ao usuário.
+O tratamento de falhas é um aspecto essencial no design de APIs robustas e confiáveis. Em uma arquitetura bem projetada, é fundamental que os serviços
+sejam capazes de lidar adequadamente com erros, assegurando que a API ofereça respostas consistentes e resilientes para os consumidores.
 
 ## Descrição da implementação
+
+## Blocos Try-Catch e Validação de Resultados
+
+Um dos princípios básicos aplicados nos serviços do projeto consiste em proteger os serviços com blocos try-catch. Isso permitiu capturar exceções que
+possam surgir durante a execução e responder aos clientes com mensagens adequadas. No caso de operações que envolvem busca de dados, uma prática importante é verificar os resultados antes de retorná-los. Por exemplo, ao invés de simplesmente devolver uma resposta vazia, a API informa que os dados solicitados não foram encontrados, melhorando a transparência e usabilidade.
+
+## Interceptador Global para Erros Não Tratados
+
+Foi realizado a implementação de um interceptador global para capturar erros que não foram tratados diretamente nos serviços ou controladores, garantindo
+que a API sempre retorne respostas consistentes. Essa camada adicional de proteção contribui para a robustez do sistema, especialmente em cenários
+nos quais erros inesperados acontecem.
+
+## Resiliência Contra Falhas em APIs Terceiras: Circuit Breaker
+
+Como esse projeto integra com uma API pública de filmes, a resiliência da API pode ser desafiada pela indisponibilidade ou instabilidade do provedor terceiro.
+Para mitigar esse risco, foi implementado o padrão Circuit Breaker, uma solução que ajuda a prevenir o esgotamento de recursos ao limitar as tentativas de
+acesso a um serviço falho.
+
+Essa lógica foi implementada em um módulo dedicado, assim como um interceptador que monitora e gerencia os circuit breakers de maneira granular, por serviço.
+Além disso, foi implementado um decorador para simplificar a aplicação do Circuit Breaker em serviços ou controladores específicos e promover a reusabilidade
+desse sistema em toda API.
+
+## Aplicação Prática: API Client de Filmes
+
+No controlador responsável pelo acesso à API pública de filmes, o decorador foi utilizado para aplicar a lógica do Circuit Breaker. Com isso, em cenários
+de indisponibilidade, a nossa API suspende imediatamente o processamento de novas requisições relacionadas, evitando sobrecarregar seus recursos ou
+amplificar os problemas causados pelo serviço externo. Essa estratégia garante que a API permaneça disponível para outras operações enquanto o provedor
+terceiro restabelece sua funcionalidade.
+
+## Conclusão
+
+O tratamento de falhas no design de APIs não é apenas uma questão de capturar erros, mas de projetar um sistema resiliente, escalável e seguro. As práticas
+como blocos try-catch, validação de resultados, interceptadores globais e o padrão Circuit Breaker, contribuem para um bom design em que a API se torna resistente a
+erros. Essas estratégias não só protegem os recursos da aplicação, como também asseguram uma experiência confiável para os clientes.

@@ -115,8 +115,12 @@ forma centralizada, aplicada por padrão a todas as rotas, ou de forma personali
 e verificando, com base no IP do cliente, se o limite de requisições foi excedido. Caso ultrapasse o limite, o módulo bloqueia a requisição e retorna
 um erro adequado.
 
+## Rate Limit geral da API
+
 Na minha aplicação, configurei um limite geral de 10 requisições por IP a cada 30 segundos, aplicado a todas as rotas como padrão. Esse comportamento foi implementado diretamente no módulo principal. Além disso, criei um provider para expor o ThrottlerGuard a todos os módulos, possibilitando o uso do conceito de Guards
 exemplificado anteriormente no AuthModule, visando aplicar limites a rotas ou controladores.
+
+## Rate Limit para serviços sensíveis
 
 No contexto dessa API, implementei um controle mais restritivo apenas na rota de login. Como se trata de uma rota sensível, sujeita a ataques maliciosos, apliquei um rate limit de 10 requisições a cada 10 minutos. Isso ajuda a proteger a API de tentativas de força bruta e de acessos indevidos.
 
@@ -136,6 +140,8 @@ A implementação de autenticação e autorização é uma etapa essencial no de
 mas complementares: enquanto a autenticação garante que a identidade do usuário seja validada, a autorização controla o acesso aos recursos da API com
 base nas permissões desse usuário.
 
+## Abordagem usada no projeto
+
 Nessa API, utilizei um design baseado em tokens JWT (JSON Web Tokens), um padrão amplamente utilizado para autenticação. Um JWT
 é um token criptografado compacto e seguro, usado para transmitir informações entre as partes envolvidas de maneira confiável. Ele contém três partes principais:
 
@@ -147,12 +153,16 @@ O fluxo geral de autenticação utilizando JWT funciona assim: quando um usuári
 é enviado ao cliente. Em todas as requisições subsequentes, o cliente inclui esse token no cabeçalho da requisição para acessar os recursos protegidos.
 A API, por sua vez, valida o token para garantir que ele seja legítimo e não tenha expirado.
 
+## Arquitetura da solução
+
 No contexto do NestJS, essa lógica foi encapsulada no módulo AuthModule, mantendo a aplicação modular e escalável. Os serviços como cadastro (signup) e autenticação (login) do AuthModule, foram possibilitadas pelas funções de buscar e cadastrar usuários fornecidas pelo UserModule. Além disso, as senhas dos usuários são armazenadas e manipuladas de forma segura utilizando criptografia, como o bcrypt, para impedir que sejam expostas em caso de violações de dados.
 
 Já a autorização foi implementada verificando o token recebido em cada requisição protegida. Isso foi feito com um mecanismo que intercepta as requisições
 antes que elas cheguem aos controladores verificando a validade do token e extraindo as informações do usuário para que possam ser utilizadas pela aplicação. Na
 aplicação, nomeamos a classe que implementa a autorização de AuthGuard e por meio do NestJS ela pode ser aplicada tanto a nível de rotas quanto a
 nível dos controladores. Essa abordagem é recomendada ao separar as responsabilidades de autenticação e autorização, além de permitir que sejam aplicadas de forma consistente em toda a API.
+
+## Conclusão
 
 Esse modelo de design com JWT permite criar APIs sem estado, onde o servidor não precisa manter informações de sessão para cada usuário. Isso é ideal para aplicações escaláveis, já que os tokens contêm todas as informações necessárias para validar o acesso. No caso do NestJS, a integração nativa com ferramentas de proteção, como guards e módulos dedicados, torna essa implementação robusta e de fácil manutenção.
 

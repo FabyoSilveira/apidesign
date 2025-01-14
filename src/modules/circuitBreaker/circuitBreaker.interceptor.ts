@@ -25,7 +25,7 @@ export class CircuitBreakerInterceptor implements NestInterceptor {
     return from(
       breaker
         .fire()
-        .then((result) => result)
+        .then((result) => result) // Bypass success async/await
         .catch((err) => {
           if (breaker.opened) {
             throw new BadGatewayException(
@@ -34,6 +34,6 @@ export class CircuitBreakerInterceptor implements NestInterceptor {
           }
           throw err;
         }),
-    ).pipe(map((response) => response));
+    ).pipe(map((response) => response)); // Bypass observable success
   }
 }

@@ -123,10 +123,8 @@ O módulo de filmes, principal e mais utilizado na API, teve seu versionamento c
 definir a versão de um controlador no próprio decorador da classe, o que facilita a aplicação automática de prefixos como v1 em todas as rotas pertencentes a ele.
 Por exemplo, o controlador do módulo de filmes foi configurado para usar o prefixo /v1/movie, garantindo que todas as rotas desse módulo estejam claramente associadas à versão 1.
 
-```javascript
+```typescript
 @Controller({ path: 'movie', version: '1' })
-@UseGuards(AuthGuard)
-@UseCircuitBreaker()
 export class MovieController {}
 ```
 
@@ -166,9 +164,37 @@ um erro adequado.
 Na minha aplicação, configurei um limite geral de 10 requisições por IP a cada 30 segundos, aplicado a todas as rotas como padrão. Esse comportamento foi implementado diretamente no módulo principal. Além disso, criei um provider para expor o ThrottlerGuard a todos os módulos, possibilitando o uso do conceito de Guards
 exemplificado anteriormente no AuthModule, visando aplicar limites a rotas ou controladores.
 
+```typescript
+@Module({
+  imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: seconds(30),
+        limit: 10,
+      },
+    ]),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
+})
+export class AppModule {}
+```
+
 ## Rate Limit para serviços sensíveis
 
 No contexto dessa API, implementei um controle mais restritivo apenas na rota de login. Como se trata de uma rota sensível, sujeita a ataques maliciosos, apliquei um rate limit de 10 requisições a cada 10 minutos. Isso ajuda a proteger a API de tentativas de força bruta e de acessos indevidos.
+
+```typescript
+@Throttle({ default: { limit: 10, ttl: minutes(10) } })
+  @Post('login')
+  async login(@Body() credentials: LoginDto): Promise<any> {
+    return this.authService.login(credentials);
+  }
+```
 
 ## Conclusão
 
@@ -205,10 +231,65 @@ A API, por sua vez, valida o token para garantir que ele seja legítimo e não t
 
 No contexto do NestJS, essa lógica foi encapsulada no módulo AuthModule, mantendo a aplicação modular e escalável. Os serviços como cadastro (signup) e autenticação (login) do AuthModule, foram possibilitadas pelas funções de buscar e cadastrar usuários fornecidas pelo UserModule. Além disso, as senhas dos usuários são armazenadas e manipuladas de forma segura utilizando criptografia, como o bcrypt, para impedir que sejam expostas em caso de violações de dados.
 
+Abaixo um trecho da implementação do método de login:
+
+```typescript
+try {
+  const user = await this.userService.getUserByEmail(email);
+  const isPasswordMatch = await bcrypt.compare(pass, user?.password);
+
+  if (!isPasswordMatch) {
+    throw new UnauthorizedException();
+  }
+
+  const access_token = await this.jwtService.signAsync({
+    sub: user.id,
+    username: user.username,
+    email: user.email,
+  });
+
+  return { access_token };
+} catch (e) {
+  throw new UnauthorizedException();
+}
+```
+
 Já a autorização foi implementada verificando o token recebido em cada requisição protegida. Isso foi feito com um mecanismo que intercepta as requisições
 antes que elas cheguem aos controladores verificando a validade do token e extraindo as informações do usuário para que possam ser utilizadas pela aplicação. Na
 aplicação, nomeamos a classe que implementa a autorização de AuthGuard e por meio do NestJS ela pode ser aplicada tanto a nível de rotas quanto a
 nível dos controladores. Essa abordagem é recomendada ao separar as responsabilidades de autenticação e autorização, além de permitir que sejam aplicadas de forma consistente em toda a API.
+
+Abaixo a implementação do método que autoriza ou não o acesso a rota e sua utilização no controlador do módulo Movie:
+
+```typescript
+async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const request = ctx.switchToHttp().getRequest();
+
+    const token = this.getBearerTokenFromHeader(request);
+
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+
+    try {
+      const userObj = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+
+      //Allow us to access authenticated user info on the route handlers
+      request['user'] = userObj;
+    } catch {
+      throw new UnauthorizedException();
+    }
+
+    return true;
+  }
+```
+
+```typescript
+@UseGuards(AuthGuard)
+export class MovieController {}
+```
 
 ## Conclusão
 
@@ -309,11 +390,61 @@ sejam capazes de lidar adequadamente com erros, assegurando que a API ofereça r
 Um dos princípios básicos aplicados nos serviços do projeto consiste em proteger os serviços com blocos try-catch. Isso permitiu capturar exceções que
 possam surgir durante a execução e responder aos clientes com mensagens adequadas. No caso de operações que envolvem busca de dados, uma prática importante é verificar os resultados antes de retorná-los. Por exemplo, ao invés de simplesmente devolver uma resposta vazia, a API informa que os dados solicitados não foram encontrados, melhorando a transparência e usabilidade.
 
+```typescript
+async getMovieByIMDBId(movieId: string): Promise<TMDBMovie> {
+    try {
+      const response = await firstValueFrom(
+        this.httpClient.get<TMDBFindResponse>(
+          `/find/${movieId}?external_source=imdb_id`,
+        ),
+      );
+
+      if (response.data.movie_results.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.NOT_FOUND,
+            data: {
+              message:
+                'O filme que você procura não pode ser encontrado! Confira se o ID do Imdb está correto!',
+            },
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      return response.data.movie_results[0];
+    } catch (error) {
+      throw error;
+    }
+  }
+```
+
 ## Interceptador Global para Erros Não Tratados
 
 Foi realizado a implementação de um interceptador global para capturar erros que não foram tratados diretamente nos serviços ou controladores, garantindo
 que a API sempre retorne respostas consistentes. Essa camada adicional de proteção contribui para a robustez do sistema, especialmente em cenários
 nos quais erros inesperados acontecem.
+
+```typescript
+intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      catchError((error) => {
+        if (error instanceof HttpException) {
+          throw error;
+        }
+
+        const response = {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          data: {
+            message: 'An unexpected error occurred.',
+            error: error.message,
+          },
+        };
+
+        throw new HttpException(response, HttpStatus.INTERNAL_SERVER_ERROR);
+      }),
+    );
+```
 
 ## Resiliência Contra Falhas em APIs Terceiras: Circuit Breaker
 
@@ -325,6 +456,35 @@ Essa lógica foi implementada em um módulo dedicado, assim como um interceptado
 Além disso, foi implementado um decorador para simplificar a aplicação do Circuit Breaker em serviços ou controladores específicos e promover a reusabilidade
 desse sistema em toda API.
 
+O método responsável por interceptar as requests e gerenciar os breakers:
+
+```typescript
+intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const controllerName = context.getClass().name;
+    const routeName = context.getHandler().name;
+
+    const circuitKey = `${controllerName}.${routeName}`;
+
+    const breaker = this.circuitBreakerService.getBreaker(circuitKey, () =>
+      firstValueFrom(from(next.handle())),
+    );
+
+    return from(
+      breaker
+        .fire()
+        .then((result) => result) // Bypass success async/await
+        .catch((err) => {
+          if (breaker.opened) {
+            throw new BadGatewayException(
+              'Serviço temporariamente indisponível.',
+            );
+          }
+          throw err;
+        }),
+    ).pipe(map((response) => response)); // Bypass observable success
+  }
+```
+
 ## Aplicação Prática: API Client de Filmes
 
 No controlador responsável pelo acesso à API pública de filmes, o decorador foi utilizado para aplicar a lógica do Circuit Breaker. Com isso, em cenários
@@ -332,12 +492,13 @@ de indisponibilidade, a nossa API suspende imediatamente o processamento de nova
 amplificar os problemas causados pelo serviço externo. Essa estratégia garante que a API permaneça disponível para outras operações enquanto o provedor
 terceiro restabelece sua funcionalidade.
 
+```typescript
+@UseCircuitBreaker()
+export class MovieController {}
+```
+
 ## Conclusão
 
 O tratamento de falhas no design de APIs não é apenas uma questão de capturar erros, mas de projetar um sistema resiliente, escalável e seguro. As práticas
 como blocos try-catch, validação de resultados, interceptadores globais e o padrão Circuit Breaker, contribuem para um bom design em que a API se torna resistente a
 erros. Essas estratégias não só protegem os recursos da aplicação, como também asseguram uma experiência confiável para os clientes.
-
-```
-
-```

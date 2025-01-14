@@ -45,6 +45,45 @@ de implementação do sistema de exemplo. Os tópicos implementados estão lista
 - Testabilidade
 - Tratamento de Falhas
 
+# Detalhamento das Rotas do Sistema
+
+A API oferece serviços em dois módulos principais: **Auth** e **Movie**, cada um com seus respectivos controladores e serviços. A seguir,
+detalhamos as rotas e suas funcionalidades:
+
+## Módulo Auth
+
+O módulo de autenticação (Auth) é responsável pelo gerenciamento de usuários e autenticação no sistema. Ele disponibiliza duas rotas principais:
+
+- **`POST /auth/signup`**  
+  Essa rota permite o cadastro de novos usuários no sistema. Ela recebe um Data Transfer Object (DTO) contendo as informações do usuário (username, e-mail, senha). Internamente, essa funcionalidade utiliza o método `createUser`, encapsulado no módulo `User`, para persistir os dados do usuário no banco de dados.
+
+- **`POST /auth/login`**  
+  A rota de login autentica usuários cadastrados no sistema. Ela recebe as credenciais do usuário (e-mail e senha) e as verifica por meio do módulo `User`, que busca
+  as informações no banco de dados. Caso as credenciais estejam corretas, a rota retorna um token de autorização, permitindo o acesso às funcionalidades do
+  módulo Movie protegidas da API.
+
+## Módulo Movie
+
+O módulo principal da API é o de filmes (Movie), que fornece integração com uma base de dados externa para busca de informações sobre filmes e atores/atrizes. Ele oferece quatro rotas principais:
+
+- **`GET /v1/movie/actors/:id`**  
+  Permite buscar informações detalhadas sobre um ator ou atriz a partir do ID do IMDB.
+
+- **`GET /v1/movie/:id`**  
+  Fornece informações detalhadas sobre um filme a partir do ID do IMDB.
+
+- **`GET /v1/movie/search`**  
+  Realiza buscas de filmes por título. Essa rota suporta pesquisas que podem retornar múltiplos resultados, como quando o título buscado corresponde a mais de um filme registrado na base.
+
+- **`GET /v1/movie/actors/search`**  
+  Busca atores e atrizes por nome. Assim como a busca por filmes, essa rota pode retornar vários resultados dependendo da correspondência com o nome informado.
+
+## Arquitetura e Consistência do Módulo Movie
+
+O módulo Movie utiliza uma abordagem arquitetural robusta para lidar com integrações externas. Ele conta com uma classe chamada `MovieClientAdapter`, que intermedia as chamadas ao cliente de filmes (MovieClient). Essa classe adapta os dados retornados pela API do provedor externo para o formato esperado pelo domínio da nossa API.
+
+Essa estratégia oferece uma vantagem significativa: se houver necessidade de trocar o provedor de dados de filmes no futuro, a alteração será isolada no cliente e no adaptador, preservando a lógica do módulo Movie e garantindo a consistência dos contratos da API.
+
 # Versionamento
 
 ## Introdução

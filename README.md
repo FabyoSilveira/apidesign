@@ -80,7 +80,7 @@ O módulo principal da API é o de filmes (Movie), que fornece integração com 
 
 ## Arquitetura e Consistência do Módulo Movie
 
-O módulo Movie utiliza uma abordagem arquitetural robusta para lidar com integrações externas. Ele conta com uma classe chamada `MovieClientAdapter`, que intermedia as chamadas ao cliente de filmes (MovieClient). Essa classe adapta os dados retornados pela API do provedor externo para o formato esperado pelo domínio da nossa API.
+O módulo Movie utiliza o padrão de adaptadores, que é robusto para lidar com integrações externas. Ele conta com uma classe chamada `MovieClientAdapter`, que intermedia as chamadas ao cliente de filmes (MovieClient). Essa classe adapta os dados retornados pela API do provedor externo para o formato esperado pelo domínio da nossa API.
 
 Essa estratégia oferece uma vantagem significativa: se houver necessidade de trocar o provedor de dados de filmes no futuro, a alteração será isolada no cliente e no adaptador, preservando a lógica do módulo Movie e garantindo a consistência dos contratos da API.
 
@@ -122,6 +122,13 @@ A versão atual da API foi estabelecida como 1.0.1, refletindo seu estado inicia
 O módulo de filmes, principal e mais utilizado na API, teve seu versionamento configurado diretamente nos controladores. No NestJS, é possível
 definir a versão de um controlador no próprio decorador da classe, o que facilita a aplicação automática de prefixos como v1 em todas as rotas pertencentes a ele.
 Por exemplo, o controlador do módulo de filmes foi configurado para usar o prefixo /v1/movie, garantindo que todas as rotas desse módulo estejam claramente associadas à versão 1.
+
+```javascript
+@Controller({ path: 'movie', version: '1' })
+@UseGuards(AuthGuard)
+@UseCircuitBreaker()
+export class MovieController {}
+```
 
 Essa abordagem traz duas vantagens importantes:
 
@@ -330,3 +337,7 @@ terceiro restabelece sua funcionalidade.
 O tratamento de falhas no design de APIs não é apenas uma questão de capturar erros, mas de projetar um sistema resiliente, escalável e seguro. As práticas
 como blocos try-catch, validação de resultados, interceptadores globais e o padrão Circuit Breaker, contribuem para um bom design em que a API se torna resistente a
 erros. Essas estratégias não só protegem os recursos da aplicação, como também asseguram uma experiência confiável para os clientes.
+
+```
+
+```

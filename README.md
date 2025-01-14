@@ -259,7 +259,7 @@ antes que elas cheguem aos controladores verificando a validade do token e extra
 aplicação, nomeamos a classe que implementa a autorização de AuthGuard e por meio do NestJS ela pode ser aplicada tanto a nível de rotas quanto a
 nível dos controladores. Essa abordagem é recomendada ao separar as responsabilidades de autenticação e autorização, além de permitir que sejam aplicadas de forma consistente em toda a API.
 
-Abaixo a implementação do método que autoriza ou não o acesso a rota e sua utilização no controlador do módulo Movie:
+Implementação do método que autoriza ou não o acesso as chamadas interceptadas:
 
 ```typescript
 async canActivate(ctx: ExecutionContext): Promise<boolean> {
@@ -285,6 +285,8 @@ async canActivate(ctx: ExecutionContext): Promise<boolean> {
     return true;
   }
 ```
+
+Utilização do guarda no controlador do módulo Movie:
 
 ```typescript
 @UseGuards(AuthGuard)
